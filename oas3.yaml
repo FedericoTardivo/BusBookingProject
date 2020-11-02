@@ -1,0 +1,29 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Bus booking API
+  description: API per interfacciarsi con il servizio di prenotazione degli autobus creato dal gruppo \#32 per il progetto di Ingegneria del Software 2 della laurea triennale in Informatica (UniTN)
+  
+servers:
+  - url: http://localhost:8000/v1
+
+paths:
+  /lines:
+    get:
+      description: Restituisce la lista delle fermate del servizio di trasporti specificato
+      parameters:
+        - name: companyId
+          required: true
+          in: query
+          description: ID della compagnia di trasporti per la quale si vogliono ottenere le linee
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
