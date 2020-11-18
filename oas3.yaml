@@ -27,3 +27,123 @@ paths:
                 type: array
                 items:
                   type: object
+
+  /account/register:
+    post:
+      description: Crea un nuovo account passeggero
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/User'
+                - type: object
+                  required:
+                    - password
+                    - confirmPassword
+                  properties:
+                    password:
+                      type: string
+                      example: "MySuperSecretPassword"
+                    confirmPassword:
+                      type: string
+                      example: "MySuperSecretPassword"
+      responses:
+        '201':
+          description: Account creato con successo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSelf'
+          headers:
+            Location:
+              schema:
+                type: string
+              description: Link per ottenere l'account appena creato
+        
+        '400':
+          example:
+              message: dgw
+          $ref: '#/components/responses/400BadRequest'
+          
+        '409':
+          description: Email già registrata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FieldError'
+              example:
+                fieldName: email
+                fieldMessage: L'email "mario.rossi@domain.com" è già registrata
+            
+components:
+  # Data models
+  schemas:
+    SelfObj:
+      type: object
+      properties:
+        self:
+          type: string
+          example: /api/v1/object/8452
+  
+    User:
+      type: object
+      required:
+        - name
+        - surname
+        - email
+      properties:
+        name:
+          type: string
+          example: Mario
+        surname:
+          type: string
+          example: Rossi
+        email:
+          type: string
+          example: mario.rossi@domain.com
+    
+    UserSelf:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/SelfObj'
+        - $ref: '#/components/schemas/User'
+          
+    # An error message relative to a field
+    FieldError:
+      type: object
+      properties:
+        fieldName:
+          type: string
+          description: "Nome del campo che ha generato l'errore"
+        fieldMessage:
+          type: string
+          description: "Errore specifico del campo"
+      required:
+        - fieldName
+        - fieldMessage
+        
+  # Responses such as 400 Bad Request or 401 Unauthorized
+  responses:
+    400BadRequest:
+      description: Richiesta invalida. Parametri non validi e/o parametri obbligatori mancanti
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: "Messaggio dell'errore"
+                example: Il campo "email" è obbligatorio 
+              fieldsErrors:
+                type: array
+                description: "I campi che hanno generato l'errore con il relativo messaggio"
+                items:
+                  $ref: '#/components/schemas/FieldError'
+                example:
+                  - fieldName: email
+                    fieldMessage: Il campo "email" è obbligatorio
+            required:
+              - message
