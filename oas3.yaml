@@ -27,3 +27,120 @@ paths:
                 type: array
                 items:
                   type: object
+                  
+  /account/login:
+    post: 
+      description: esegue il login dell'utente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/LoginUser'
+                - type: object
+
+      responses:
+        '400':
+          description: campo mancante
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/400BadRequest'
+            
+        '401':
+          description: Email o Password errati
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Unauthorized'
+          
+components:
+  #Data Models
+  schemas:
+  
+    #User
+    LoginUser:
+      type: object
+      required: 
+        - email
+        - password
+      properties:
+        email: 
+          type: string
+          example: mario.rossi@domain.com
+        password: 
+          type: string
+          example: "MySuperSecretPassword"
+    
+    #An entry's error
+    401Unauthorized:
+      type: object
+      properties:
+        fieldName:
+          type: string
+          description: nome del campo con l'inserimento errato
+        fieldMessage:
+          type: string
+          description: "Errore del campo"
+      required:
+        - fieldMessage
+        - fieldName
+        
+    # Responses such as 400 Bad Request or 401 Unauthorized
+  responses:
+    400BadRequest:
+      description: Richiesta invalida. Parametri non validi e/o parametri obbligatori mancanti
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: "Messaggio dell'errore"
+                example: Il campo "email" è obbligatorio 
+              fieldsErrors:
+                type: array
+                description: "I campi che hanno generato l'errore con il relativo messaggio"
+                items:
+                  $ref: '#/components/schemas/401Unauthorized'
+                example:
+                  - fieldName: email
+                    fieldMessage: Il campo "email" è obbligatorio
+            required:
+              - message
+    
+        
+    
+            
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
