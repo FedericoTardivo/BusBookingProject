@@ -28,7 +28,7 @@ paths:
                 items:
                   type: object
 
-  /account/register:
+  /users:
     post:
       description: Crea un nuovo account passeggero
       requestBody:
@@ -63,8 +63,6 @@ paths:
               description: Link per ottenere l'account appena creato
         
         '400':
-          example:
-              message: dgw
           $ref: '#/components/responses/400BadRequest'
           
         '409':
