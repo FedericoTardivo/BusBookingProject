@@ -1,8 +1,8 @@
-import User from '../models/User.js'
-import BadRequestResponse from '../models/BadRequestResponse.js'
-import FieldError from '../models/FieldError.js'
+const User = require('../models/User.js')
+const BadRequestResponse = require('../models/BadRequestResponse.js')
+const FieldError = require('../models/FieldError.js')
 
-export const createUser = (req, res) => {
+module.exports.createUser = (req, res) => {
     // Create a new object
     let user = new User();
     user.name = req.body.name;

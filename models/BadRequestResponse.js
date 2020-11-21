@@ -5,4 +5,4 @@ class BadRequestResponse {
     }
 }
 
-export default BadRequestResponse;
+module.exports = BadRequestResponse;

@@ -1,7 +1,7 @@
-import express from 'express';
-import bodyParser from 'body-parser';
+const express = require('express');
+const bodyParser = require('body-parser');
 
-import usersRoutes from './routes/users.js';
+const usersRoutes = require('./routes/users.js');
 
 const app = express();
 
@@ -31,3 +31,5 @@ const port = 8000;
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
 });
+
+module.exports = app;

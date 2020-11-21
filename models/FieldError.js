@@ -5,4 +5,4 @@ class FieldError {
     }
 }
 
-export default FieldError;
+module.exports = FieldError;
