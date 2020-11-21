@@ -1,12 +1,8 @@
-import express from 'express';
-import User from './models/User.js'
-import BadRequestResponse from './models/BadRequestResponse.js'
-import FieldError from './models/FieldError.js'
+import User from '../models/User.js'
+import BadRequestResponse from '../models/BadRequestResponse.js'
+import FieldError from '../models/FieldError.js'
 
-const router = express.Router();
-
-// Register a new user
-router.post('/', (req, res) => {
+export const createUser = (req, res) => {
     // Create a new object
     let user = new User();
     user.name = req.body.name;
@@ -68,7 +64,7 @@ router.post('/', (req, res) => {
     };
     // Send back the newly created user
     res.location("/api/v1/users/" + user.id).status(201).json(resObj);
-});
+};
 
 // https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
 function checkIfEmailInString(text) {
@@ -76,5 +72,3 @@ function checkIfEmailInString(text) {
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(text);
 }
-
-export default router;
