@@ -1,6 +1,8 @@
-const User = require('../models/User.js')
-const BadRequestResponse = require('../models/BadRequestResponse.js')
-const FieldError = require('../models/FieldError.js')
+const User = require('../models/User.js');
+const BadRequestResponse = require('../models/BadRequestResponse.js');
+const FieldError = require('../models/FieldError.js');
+
+const db = require("../lib/db");
 
 module.exports.createUser = (req, res) => {
     // Create a new object
@@ -47,23 +49,32 @@ module.exports.createUser = (req, res) => {
         errResp.message = 'La richiesta non è valida.'
         return res.status(400).json(errResp);
     }
+
+    // Check if the email is already registered
+    if(db.users.get().find(u => u.email == user.email)) 
+    {
+        return res.status(409).json({
+            fieldName: "email",
+            fieldMessage: `L'email \"${user.email}\" è già registrata`
+          });
+    }
     
     // The request is valid
-    
-    // Create an ID for the new user
-    // TODO: Create a valid ID!
-    user.id = 'createOneID';
-        
-    // TODO: Add the user to the DB
 
+    // Create an ID for the new user
+    const id = db.users.register(user);
+    
     let resObj = {
-        self: `/api/v1/users/${user.id}`,
+        self: `/api/v1/users/${id}`,
         name: user.name,
         surname: user.surname,
         email: user.email
     };
+
     // Send back the newly created user
-    res.location("/api/v1/users/" + user.id).status(201).json(resObj);
+    res.location("/api/v1/users/" + id).status(201).json(resObj);
+
+    console.log(db.users.get());
 };
 
 // https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
