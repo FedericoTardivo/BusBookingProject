@@ -5,7 +5,7 @@ info:
   description: API per interfacciarsi con il servizio di prenotazione degli autobus creato dal gruppo \#32 per il progetto di Ingegneria del Software 2 della laurea triennale in Informatica (UniTN)
   
 servers:
-  - url: http://localhost:8000/v1
+  - url: https://busbooking-ingsoft2.herokuapp.com/api/v1
 
 paths:
   /lines:

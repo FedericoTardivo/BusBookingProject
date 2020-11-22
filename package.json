@@ -1,7 +1,7 @@
 {
   "name": "ingsoft2-project",
   "version": "1.0.0",
-  "description": "",
+  "description": "Progetto per il corso di Ingegneria del Software 2 della laurea triennale in Informatica (UniTN)",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
