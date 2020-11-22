@@ -41,6 +41,13 @@ paths:
                 - type: object
 
       responses:
+        '201':
+          description: Account creato con successo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginUser'
+                  
         '400':
           description: campo mancante
           content:
