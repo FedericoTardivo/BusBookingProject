@@ -1,11 +1,9 @@
 const express = require('express');
-
-//import {createUser} from '../controllers/users.js';
-const {createUser} = require('../controllers/users.js');
-
+const {getTickets} = require('../controllers/tickets.js');
 const router = express.Router();
 
-// POST: Register a new user
-router.post('/', createUser);
+
+router.get('/', getTickets);
+
 
 module.exports = router;
