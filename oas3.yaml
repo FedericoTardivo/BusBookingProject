@@ -28,7 +28,7 @@ paths:
                 items:
                   type: object
                   
-  /account/login:
+  /users/login:
     post: 
       description: esegue il login dell'utente
       requestBody:
