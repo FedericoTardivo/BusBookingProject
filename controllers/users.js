@@ -44,11 +44,11 @@ module.exports.loginUser = (req, res) => {
 		//check if the entered password matches
 		if (user.password != tempUser.password){
 			errResp.message = 'Password errata'
-			return res.status(404).json(errResp);
+			return res.status(401).json(errResp);
 		} else {
 			//request is valid, return ID user
-			console.log(tempUser.id;
-			res.send("utente " + tempUser.id + " loggato")
+			console.log(tempUser.id);
+			res.status(201).send("utente " + tempUser.id + " loggato");
 			return tempUser.id;					//qui andrebbe il reindirizzamento
 		}
 
