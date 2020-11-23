@@ -18,7 +18,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/users', usersRoutes);
+app.use('/api/v1/users', usersRoutes);
 
 /* Default 404 handler */
 app.use((req, res) => {
