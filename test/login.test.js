@@ -1,11 +1,11 @@
 const app = require('../index.js');
 const supertest = require('supertest');
 
-const require = supertest(app);
+const request = supertest(app);
 
-describe ('Test API Login Users, () => {
+describe ('Test API Login Users', () => {
 
-	afertAll((done) => {
+	afterAll((done) => {
 		done();
 	})
 
@@ -17,11 +17,11 @@ describe ('Test API Login Users, () => {
 			"message": "la richiesta non è valida.",
 			"fieldsErrors": [
 				{
-					"fieldName": "email"
+					"fieldName": "email",
 					"fieldMessage": "The field \"email\" must be a valid email adress"
 				},
 				{
-					"fieldName": "password"
+					"fieldName": "password",
 					"fieldMessage": "the field \"password\" must be at least 6 chars long"
 				}
 			]
