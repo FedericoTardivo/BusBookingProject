@@ -4,7 +4,7 @@
   "description": "Progetto per il corso di Ingegneria del Software 2 della laurea triennale in Informatica (UniTN)",
   "main": "index.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "node index.js",
     "test": "jest"
   },
   "author": "Group32",
@@ -12,7 +12,6 @@
   "dependencies": {
     "express": "^4.17.1"
   },
-
   "devDependencies": {
     "jest": "^26.6.3"
   },
