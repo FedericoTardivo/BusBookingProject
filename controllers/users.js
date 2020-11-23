@@ -74,8 +74,6 @@ module.exports.createUser = (req, res) => {
 
     // Send back the newly created user
     res.location("/api/v1/users/" + id).status(201).json(resObj);
-
-    console.log(db.users.get());
 }
 
 module.exports.loginUser = (req, res) => {
@@ -106,7 +104,7 @@ module.exports.loginUser = (req, res) => {
 	}
 	
 	// at this point, email and password are valid
-	
+    
 	// check if user is registered	
 	let tempUser = db.users.get().find(u => u.email == user.email);
 	if (tempUser == null) {
@@ -120,7 +118,6 @@ module.exports.loginUser = (req, res) => {
 			return res.status(401).json(errResp);
 		} else {
 			//request is valid, return ID user
-			console.log(tempUser.id);
 			return res.status(200).send("utente " + tempUser.id + " loggato");
 		}
 
