@@ -8,22 +8,133 @@ servers:
   - url: https://busbooking-ingsoft2.herokuapp.com/api/v1
 
 paths:
-  /lines:
+  /Lines:
     get:
-      description: Restituisce la lista delle fermate del servizio di trasporti specificato
+      description: "permette di ottenere le linee disponibili per il servizio trasporti selezionato"
       parameters:
-        - name: companyId
+        - in: query
+          name: companyId
+          description: filtra le linee disponibili visualizzando esclusivamente le linee relative all'azienda utente che vuole modificare una o pi� linee
           required: true
-          in: query
-          description: ID della compagnia di trasporti per la quale si vogliono ottenere le linee
           schema:
             type: integer
       responses:
         '200':
           description: Successful response
-          content:
+          content: 
             application/json:
               schema:
                 type: array
                 items:
                   type: object
+  /Line/Setup:
+    post:
+      description: Imposta una nuova linea
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Lines'
+                - type: object
+                  required:
+                    - number
+                    - BusStopTotal
+                  properties:
+                    number:
+                      type: integer
+                      example: 10
+                    BusStopTotal:
+                      type: integer
+                      example: 12
+      responses:
+        '201':
+          description: Linea inserita correttamente
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineSelf'
+                  
+
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        
+        '409':
+          description: Linea gi� esistente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineError'
+        
+components:
+  schemas:
+    SelfObj:
+      type: object
+      properties:
+        self:
+          type: string
+          example: /api/v1/object/8452
+    Lines:
+      type: object
+      required:
+        - Number
+        - BusStopTotal
+        - BusStopName
+        - BusStopOrder
+        - ArrivalTime
+      properties:
+        Number:
+          type: integer
+        BusStopTotal:
+          type: integer
+        BusStopName:
+          type: string
+        BusStopOrder:
+          type: integer
+        ArrivalTime:
+          type: string
+
+          
+    LineSelf:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/SelfObj'
+        - $ref: '#/components/schemas/Lines'
+        
+    LineError:
+      type: object
+      properties:
+        FieldName:
+          type: string
+          description: "Nome del campo che ha generato l'errore"
+        FieldErrorMessage:
+          type: string
+          description: "Errore specifico del campo"        
+      required:
+        - FieldName
+        - FieldErrorMessage
+        
+# Responses such as 400 Bad Request or 401 Unauthorized
+  responses:
+    400BadRequest:
+      description: Richiesta invalida. Parametri non validi e/o parametri obbligatori mancanti
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: "Messaggio dell'errore"
+                example: Il campo "Number" � obbligatorio 
+              fieldErrors:
+                type: array
+                description: "I campi che hanno generato l'errore con il relativo messaggio"
+                items:
+                  $ref: '#/components/schemas/LineError'
+                example:
+                  - FieldName: email
+                  - FieldErrorMessage: Il campo "email" � obbligatorio
+            required:
+              - message
