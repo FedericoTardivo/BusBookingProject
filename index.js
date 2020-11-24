@@ -18,6 +18,7 @@ app.use((req, res, next) => {
     next();
 });
 
+/* set root route for ticketsRoutes */
 app.use('/tickets', ticketsRoutes);
 
 /* Default 404 handler */
