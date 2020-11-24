@@ -8,7 +8,7 @@ servers:
   - url: https://busbooking-ingsoft2.herokuapp.com/api/v1
 
 paths:
-  /Lines:
+  /lines:
     get:
       description: "permette di ottenere le linee disponibili per il servizio trasporti selezionato"
       parameters:
@@ -27,7 +27,6 @@ paths:
                 type: array
                 items:
                   type: object
-  /Line/Setup:
     post:
       description: Imposta una nuova linea
       requestBody:
