@@ -121,8 +121,8 @@
                 schema:
                   $ref: '#/components/schemas/Ticket'
 
-          '410':
-            $ref: '#/components/responses/410BadRequest'
+          '400':
+            $ref: '#/components/responses/400BadRequest'
 
           '409':
             description: Biglietto già acquistato
@@ -133,7 +133,6 @@
                 example:
                   fieldName: ticket
                   fieldMessage: Questo biglietto è già stato acquistato da questo utente
-
 
   components:
     # Data models
@@ -246,28 +245,6 @@
                   example:
                     - fieldName: email
                       fieldMessage: Il campo "email" è obbligatorio
-              required:
-                - message
-
-      410BadRequest:
-        description: Richiesta invalida. Parametri non validi e/o parametri obbligatori mancanti
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  description: "Messaggio dell'errore"
-                  example: Il campo fermata fermataPartenza è obbligatorio 
-                fieldsErrors:
-                  type: array
-                  description: "I campi che hanno generato l'errore con il relativo messaggio"
-                  items:
-                    $ref: '#/components/schemas/FieldError'
-                  example:
-                    - fieldName: fermataPartenza
-                      fieldMessage: Il campo "fermataPartenza" è obbligatorio
               required:
                 - message
 

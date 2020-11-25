@@ -20,20 +20,55 @@ module.exports.insertTicket=(req,res)=>{
 
     //validate user
     if(!ticket.utente || typeof ticket.utente != 'string'){
-        
+        valid=false;
+        errResp.fieldsErrors.push(new FieldError('user','The field "user" must be a non empty string'));
     }
 
+    //validate line
+    if(!ticket.linea || typeof ticket.linea != 'string'){
+        valid=false;
+        errResp.fieldsErrors.push(new FieldError('line','The filed "line" must be a non empty string'));
+    }
 
+    //validate startStation
+    if(!ticket.fermataPartenza || typeof ticket.fermataPartenza != 'string'){
+        valid=false;
+        errResp.fieldsErrors.push(new FieldError('startStation','The field "startStation" must be a non empty string'));
+    }
 
+    //validate stopStation
+    if(!ticket.fermataArrivo || typeof ticket.fermataArrivo != 'string'){
+        valid=false;
+        errResp.fieldsErrors.push(new FieldError('stopStation','The field "stopStation" must be a non empty string'));
+    }
 
-    let id=db.tickets.insert(ticket);
+    //validate startTime
+    if(!ticket.orarioPartenza || typeof ticket.orarioPartenza != 'string'){
+        valid=false;
+        errResp.fieldsErrors.push(new FieldError('startTime','The field "startTime" must be a non empty string'));
+    }
+
+    //validate stopTime
+    if(!ticket.orarioArrivo || typeof ticket.orarioArrivo != 'string'){
+        valid=false;
+        errResp.fieldsErrors.push(new FieldError('stopTime','The field "stopTime" must be a non empty string'));
+    }
+
+    //If something is not valid, send a BadRequest error
+    if(!valid) {
+        errResp.message = 'La richiesta non è valida.'
+        return res.status(400).json(errResp);
+    }
+
+    //The request is valid
+
+    //create id for ticket
+    const id=db.tickets.insert(ticket);
+
+    //response e console log
+    res.location("/api/v1/tickets/" + id).status(201).json(ticket);
     console.log("ticket " + id + " added");
-    res.send("ticket " + id + " added");
 };
-
-
-
-
 
 
 /* returns all the tickets to the responde */
