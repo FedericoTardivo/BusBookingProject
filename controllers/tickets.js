@@ -1,7 +1,7 @@
 
 const db = require("../lib/db.js")
-//const BadRequestResponse = require('../models/BadRequestResponse.js');
-//const FieldError = require('../models/FieldError.js');
+const BadRequestResponse = require('../models/BadRequestResponse.js');
+const FieldError = require('../models/FieldError.js');
 const Ticket = require('../models/Ticket.js');
 
 
@@ -16,7 +16,15 @@ module.exports.insertTicket=(req,res)=>{
     ticket.orarioArrivo=req.body.orarioArrivo;
     
     let valid=true;
-    //let errResp=new BadRequestResponse();
+    let errResp=new BadRequestResponse();
+
+    //validate user
+    if(!ticket.utente || typeof ticket.utente != 'string'){
+        
+    }
+
+
+
 
     let id=db.tickets.insert(ticket);
     console.log("ticket " + id + " added");

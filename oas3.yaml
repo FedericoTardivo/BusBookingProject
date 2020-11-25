@@ -187,23 +187,23 @@
           - orarioArrivo
         properties:
           utente:
-            type: object
-            example:
+            type: string
+            example: id dell'utente
           linea:
-            type : object #non ancora definito
-            example:
+            type : string 
+            example: linea 5
           fermataPartenza:
-            type : object #non ancora definito
-            example:
+            type :  string
+            example: Povo Valoni
           fermataArrivo:
-            type : object #non ancora definito
-            example:
+            type : string
+            example: Venezia Corallo 
           orarioPartenza:
-            type : object #non ancora definito
-            example:
+            type : string
+            example: 14,30
           orarioArrivo:
-            type : object #non ancora definito
-            example:  
+            type : string
+            example: 14,35 
 
       UserSelf:
         type: object
