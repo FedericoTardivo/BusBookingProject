@@ -18,9 +18,6 @@ module.exports.insertTicket=(req,res)=>{
     let valid=true;
     //let errResp=new BadRequestResponse();
 
-
-
-
     let id=db.tickets.insert(ticket);
     console.log("ticket " + id + " added");
     res.send("ticket " + id + " added");
