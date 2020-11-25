@@ -1,196 +1,258 @@
-openapi: 3.0.0
-info:
-  version: 1.0.0
-  title: Bus booking API
-  description: API per interfacciarsi con il servizio di prenotazione degli autobus creato dal gruppo \#32 per il progetto di Ingegneria del Software 2 della laurea triennale in Informatica (UniTN)
-  
-servers:
-  - url: https://busbooking-ingsoft2.herokuapp.com/api/v1
-
-paths:
-  /lines:
-    get:
-      description: Restituisce la lista delle fermate del servizio di trasporti specificato
-      parameters:
-        - name: companyId
-          required: true
-          in: query
-          description: ID della compagnia di trasporti per la quale si vogliono ottenere le linee
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-
-  /users:
-    post:
-      description: Crea un nuovo account passeggero
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/User'
-                - type: object
-                  required:
-                    - password
-                    - confirmPassword
-                  properties:
-                    password:
-                      type: string
-                      example: "MySuperSecretPassword"
-                    confirmPassword:
-                      type: string
-                      example: "MySuperSecretPassword"
-      responses:
-        '201':
-          description: Account creato con successo
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserSelf'
-          headers:
-            Location:
-              schema:
-                type: string
-              description: Link per ottenere l'account appena creato
-        
-        '400':
-          $ref: '#/components/responses/400BadRequest'
-          
-        '409':
-          description: Email già registrata
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FieldError'
-              example:
-                fieldName: email
-                fieldMessage: L'email "mario.rossi@domain.com" è già registrata
-
-  /users/login:
-    post: 
-      description: esegue il login dell'utente
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/LoginUser'
-                - type: object
-
-      responses:
-        '201':
-          description: Account creato con successo
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginUser'
-                  
-        '400':
-          $ref: '#/components/responses/400BadRequest'
-            
-        '401':
-          $ref: '#/components/responses/401Unauthorized'
-
-components:
-  # Data models
-  schemas:
-    SelfObj:
-      type: object
-      properties:
-        self:
-          type: string
-          example: /api/v1/object/8452
-  
-    # Login credentials
-    LoginUser:
-      type: object
-      required: 
-        - email
-        - password
-      properties:
-        email: 
-          type: string
-          example: mario.rossi@domain.com
-        password: 
-          type: string
-          example: "MySuperSecretPassword"
-
-    User:
-      type: object
-      required:
-        - name
-        - surname
-        - email
-      properties:
-        name:
-          type: string
-          example: Mario
-        surname:
-          type: string
-          example: Rossi
-        email:
-          type: string
-          example: mario.rossi@domain.com
+  openapi: 3.0.0
+  info:
+    version: 1.0.0
+    title: Bus booking API
+    description: API per interfacciarsi con il servizio di prenotazione degli autobus creato dal gruppo \#32 per il progetto di Ingegneria del Software 2 della laurea triennale in Informatica (UniTN)
     
-    UserSelf:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/SelfObj'
-        - $ref: '#/components/schemas/User'
+  servers:
+    - url: https://busbooking-ingsoft2.herokuapp.com/api/v1
+
+  paths:
+    /lines:
+      get:
+        description: Restituisce la lista delle fermate del servizio di trasporti specificato
+        parameters:
+          - name: companyId
+            required: true
+            in: query
+            description: ID della compagnia di trasporti per la quale si vogliono ottenere le linee
+            schema:
+              type: integer
+        responses:
+          '200':
+            description: Successful response
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    type: object
+
+    /users:
+      post:
+        description: Crea un nuovo account passeggero
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/User'
+                  - type: object
+                    required:
+                      - password
+                      - confirmPassword
+                    properties:
+                      password:
+                        type: string
+                        example: "MySuperSecretPassword"
+                      confirmPassword:
+                        type: string
+                        example: "MySuperSecretPassword"
+        responses:
+          '201':
+            description: Account creato con successo
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/UserSelf'
+            headers:
+              Location:
+                schema:
+                  type: string
+                description: Link per ottenere l'account appena creato
           
-    # An error message relative to a field
-    FieldError:
-      type: object
-      properties:
-        fieldName:
-          type: string
-          description: "Nome del campo che ha generato l'errore"
-        fieldMessage:
-          type: string
-          description: "Errore specifico del campo"
-      required:
-        - fieldName
-        - fieldMessage
-        
-  # Responses such as 400 Bad Request or 401 Unauthorized
-  responses:
-    400BadRequest:
-      description: Richiesta invalida. Parametri non validi e/o parametri obbligatori mancanti
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                description: "Messaggio dell'errore"
-                example: Il campo "email" è obbligatorio 
-              fieldsErrors:
-                type: array
-                description: "I campi che hanno generato l'errore con il relativo messaggio"
-                items:
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+            
+          '409':
+            description: Email già registrata
+            content:
+              application/json:
+                schema:
                   $ref: '#/components/schemas/FieldError'
                 example:
-                  - fieldName: email
-                    fieldMessage: Il campo "email" è obbligatorio
-            required:
-              - message
+                  fieldName: email
+                  fieldMessage: L'email "mario.rossi@domain.com" è già registrata
 
-    # Unauthorized response
-    401Unauthorized:
-      description: Utente non autorizzato.
-      content:
-        text/plain:
-          schema:
+    /users/login:
+      post: 
+        description: esegue il login dell'utente
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/LoginUser'
+                  - type: object
+
+        responses:
+          '201':
+            description: Account loggato con successo
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/LoginUser'
+                    
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+              
+          '401':
+            $ref: '#/components/responses/401Unauthorized'
+    
+    /tickets:
+      post:
+        description: Crea un nuovo biglietto
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Ticket'
+                  - type: object
+                    
+        responses:
+          '201':
+            description: Biglietto creato con successo
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Ticket'
+
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+
+          '409':
+            description: Biglietto già acquistato
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/FieldError'
+                example:
+                  fieldName: ticket
+                  fieldMessage: Questo biglietto è già stato acquistato da questo utente
+
+  components:
+    # Data models
+    schemas:
+      SelfObj:
+        type: object
+        properties:
+          self:
             type: string
-            example: Utente non autorizzato.
+            example: /api/v1/object/8452
+    
+      # Login credentials
+      LoginUser:
+        type: object
+        required: 
+          - email
+          - password
+        properties:
+          email: 
+            type: string
+            example: mario.rossi@domain.com
+          password: 
+            type: string
+            example: "MySuperSecretPassword"
+
+      User:
+        type: object
+        required:
+          - name
+          - surname
+          - email
+        properties:
+          name:
+            type: string
+            example: Mario
+          surname:
+            type: string
+            example: Rossi
+          email:
+            type: string
+            example: mario.rossi@domain.com
+
+      Ticket:
+        type: object
+        required:
+          - utente
+          - linea
+          - fermataPartenza
+          - orarioPartenza
+          - fermataArrivo
+          - orarioArrivo
+        properties:
+          utente:
+            type: string
+            example: id dell'utente
+          linea:
+            type : string 
+            example: linea 5
+          fermataPartenza:
+            type :  string
+            example: Povo Valoni
+          fermataArrivo:
+            type : string
+            example: Venezia Corallo 
+          orarioPartenza:
+            type : string
+            example: 14,30
+          orarioArrivo:
+            type : string
+            example: 14,35 
+
+      UserSelf:
+        type: object
+        allOf:
+          - $ref: '#/components/schemas/SelfObj'
+          - $ref: '#/components/schemas/User'
+            
+      # An error message relative to a field
+      FieldError:
+        type: object
+        properties:
+          fieldName:
+            type: string
+            description: "Nome del campo che ha generato l'errore"
+          fieldMessage:
+            type: string
+            description: "Errore specifico del campo"
+        required:
+          - fieldName
+          - fieldMessage
+          
+    # Responses such as 400 Bad Request or 401 Unauthorized
+    responses:
+      400BadRequest:
+        description: Richiesta invalida. Parametri non validi e/o parametri obbligatori mancanti
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: "Messaggio dell'errore"
+                  example: Il campo "email" è obbligatorio 
+                fieldsErrors:
+                  type: array
+                  description: "I campi che hanno generato l'errore con il relativo messaggio"
+                  items:
+                    $ref: '#/components/schemas/FieldError'
+                  example:
+                    - fieldName: email
+                      fieldMessage: Il campo "email" è obbligatorio
+              required:
+                - message
+
+      # Unauthorized response
+      401Unauthorized:
+        description: Utente non autorizzato.
+        content:
+          text/plain:
+            schema:
+              type: string
+              example: Utente non autorizzato.
