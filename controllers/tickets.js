@@ -60,6 +60,15 @@ module.exports.insertTicket=(req,res)=>{
         return res.status(400).json(errResp);
     }
 
+    //check if ticket is already bought
+    if(db.tickets.find(u => u.utente == ticket.utente && u.linea == ticket.linea && u.fermataPartenza == ticket.fermataPartenza && u.fermataArrivo == ticket.fermataArrivo && u.orarioPartenza == ticket.orarioPartenza && u.orarioArrivo == ticket.orarioArrivo)) 
+    {
+        return res.status(409).json({
+            fieldName: "ticket",
+            fieldMessage: `Questo biglietto è già stato acquistato da questo utente`
+          });
+    }
+
     //The request is valid
 
     //create id for ticket
