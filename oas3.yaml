@@ -27,6 +27,43 @@
                   type: array
                   items:
                     type: object
+      post:
+        description: Imposta una nuova linea
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Line'
+                  - type: object
+                    required:
+                      - number
+                      - BusStopTotal
+                    properties:
+                      number:
+                        type: integer
+                        example: 10
+                      BusStopTotal:
+                        type: integer
+                        example: 12
+        responses:
+          '201':
+            description: Linea inserita correttamente
+            content: 
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/LineSelf' 
+  
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+          
+          '409':
+            description: Linea gi� esistente
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/LineError'
 
     /users:
       post:
@@ -210,6 +247,45 @@
           - $ref: '#/components/schemas/SelfObj'
           - $ref: '#/components/schemas/User'
             
+      Line:
+        type: object
+        required:
+          - Number
+          - BusStopTotal
+          - BusStopName
+          - BusStopOrder
+          - ArrivalTime
+        properties:
+          Number:
+            type: integer
+          BusStopTotal:
+            type: integer
+          BusStopName:
+            type: string
+          BusStopOrder:
+            type: integer
+          ArrivalTime:
+            type: string
+          
+      LineSelf:
+        type: object
+        allOf:
+          - $ref: '#/components/schemas/SelfObj'
+          - $ref: '#/components/schemas/Line'
+          
+      LineError:
+        type: object
+        properties:
+          FieldName:
+            type: string
+            description: "Nome del campo che ha generato l'errore"
+          FieldErrorMessage:
+            type: string
+            description: "Errore specifico del campo"        
+        required:
+          - FieldName
+          - FieldErrorMessage
+        
       # An error message relative to a field
       FieldError:
         type: object
