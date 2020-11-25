@@ -5,7 +5,8 @@ class Line {
             this.BusStopTotal = '',
             this.BusStopName = '',
             this.BusStopOrder = '',
-            this.ArrivalTime = ''
+            this.ArrivalTime = '',
+            this.owner = ''
         }
     }
 }

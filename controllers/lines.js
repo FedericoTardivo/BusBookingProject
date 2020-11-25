@@ -12,6 +12,7 @@ module.exports.insertLine = (req, res) => {
     line.BusStopName = req.body.BusStopName;
     line.BusStopOrder = req.body.BusStopOrder;
     line.ArrivalTime = req.body.ArrivalTime;
+    line.owner = req.body.loggeduser?.id;
 
     let validField = true;
     let ResponseError = new BadRequestResponse();
@@ -25,17 +26,17 @@ module.exports.insertLine = (req, res) => {
     //BusStopTotal validation
     if(!line.BusStopTotal || typeof line.BusStopTotal != 'number'){
         validField = false;
-        ResponseError.fieldErrors.push(new FieldErr('BusStopTotal', 'the field "BustStopTotal" must be a number and non-empty'));
+        ResponseError.fieldErrors.push(new FieldErr('BusStopTotal', 'the field "BusStopTotal" must be a number and non-empty'));
     }
     //BusStopName validation
     if(!line.BusStopName || typeof line.BusStopName != 'string'){
         validField = false;
-        ResponseError.fieldErrors.push(new FieldErr('BusStopName', 'the field "BustStopName" must be a non-empty string'));
+        ResponseError.fieldErrors.push(new FieldErr('BusStopName', 'the field "BusStopName" must be a non-empty string'));
     }
     //BusStopOrder validation
     if(!line.BusStopOrder || typeof line.BusStopOrder != 'number'){
         validField = false;
-        ResponseError.fieldErrors.push(new FieldErr('BusStopOrder', 'the field "BustStopOrder" must be a number and non-empty'));
+        ResponseError.fieldErrors.push(new FieldErr('BusStopOrder', 'the field "BusStopOrder" must be a number and non-empty'));
     }
     //ArrivalTime validation
     if(!line.ArrivalTime || typeof line.ArrivalTime != 'string'){
@@ -48,13 +49,14 @@ module.exports.insertLine = (req, res) => {
         return res.status(400).json(ResponseError);
     }
     //if a line is already present in the db, this Sends an error, signalling it
-    if(db.lines.get().find(l => l.number == line.number && l.owner == req.loggeduser.id)){
+    if(db.lines.get().find(l => l.number == line.number && l.owner == req.body.loggeduser.id)){
         return res.status(409).json({
             FieldName: "number",
             FieldMessage: `Linea Numero \"${line.Number}\" già esistente`
         });
     }
     //if, instead, the request is valid
-    db.lines.insert(line);
-    res.status(201).json(line);
+    line.id = db.lines.insert(line);
+    line.self = `/api/v1/lines/${line.id}`;
+    res.location(`/api/v1/lines/${line.id}`).status(201).json(line);
 }
