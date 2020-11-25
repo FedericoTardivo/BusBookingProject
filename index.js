@@ -1,7 +1,28 @@
 const app = require('./app');
+const express = require('express');
+const bodyParser = require('body-parser');
+const usersRoutes = require('./routes/users.js');
+const app = express();
+
+app.use(bodyParser.json());
+
+app.use((req, res, next) => {
+    req.loggedUser = req.query.user;
+    next();
+});
+
+app.use('/users', usersRoutes);
+
+/* Default 404 handler */
+app.use((req, res) => {
+    res.status(404);
+    res.json({ error: 'Not found' });
+});
 
 const port = process.env.PORT || 8000;
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
 });
+
+module.exports = app;
