@@ -61,7 +61,7 @@ module.exports.insertTicket=(req,res)=>{
     }
 
     //check if ticket is already bought
-    if(db.tickets.find(u => u.utente == ticket.utente && u.linea == ticket.linea && u.fermataPartenza == ticket.fermataPartenza && u.fermataArrivo == ticket.fermataArrivo && u.orarioPartenza == ticket.orarioPartenza && u.orarioArrivo == ticket.orarioArrivo)) 
+    if(db.tickets.get().find(u => u.utente == ticket.utente && u.linea == ticket.linea && u.fermataPartenza == ticket.fermataPartenza && u.fermataArrivo == ticket.fermataArrivo && u.orarioPartenza == ticket.orarioPartenza && u.orarioArrivo == ticket.orarioArrivo)) 
     {
         return res.status(409).json({
             fieldName: "ticket",
