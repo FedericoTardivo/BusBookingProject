@@ -13,25 +13,25 @@ describe('Test API - Line insertion', () =>{
         expect(response.status).toBe(400);
         expect(response.body).toMatchObject({
             "message": "Unvalid Request.",
-            "fieldErrors": [
+            "fieldsErrors": [
                 {
-                    "fieldName" : "number",
+                    "fieldName": "number",
                     "fieldMessage": "the field \"number\" must be a number and non-empty"
                 },
                 {
-                    "fieldName" : "BusStopTotal",
+                    "fieldName": "BusStopTotal",
                     "fieldMessage": "the field \"BusStopTotal\" must be a number and non-empty"
                 },
                 {
-                    "fieldName" : "BusStopName",
+                    "fieldName": "BusStopName",
                     "fieldMessage": "the field \"BusStopName\" must be a non-empty string"
                 },
                 {
-                    "fieldName" : "BusStopOrder",
+                    "fieldName": "BusStopOrder",
                     "fieldMessage": "the field \"BusStopOrder\" must be a number and non-empty"
                 },
                 {
-                    "fieldName" : "ArrivalTime",
+                    "fieldName": "ArrivalTime",
                     "fieldMessage": "the field \"ArrivalTime\" must be a non-empty string"
                 }
             ]

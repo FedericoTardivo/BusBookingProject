@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 app.use('/api/v1/users', usersRoutes);
 /* set root route for ticketsRoutes */
 app.use('/api/v1/tickets', ticketsRoutes);
-app.use ('/api/v1/lines', linesRoutes);
+app.use('/api/v1/lines', linesRoutes);
 
 /* Default 404 handler */
 app.use((req, res) => {
