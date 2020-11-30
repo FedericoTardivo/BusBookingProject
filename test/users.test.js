@@ -2,7 +2,10 @@ const app = require('../app');
 const supertest = require('supertest');
 
 const User = require('../models/User.js');
+const Admin = require('../models/Admin.js');
+
 const db = require('../lib/db.js');
+const { admins } = require('../lib/db.js');
 
 const request = supertest(app);
 
@@ -53,7 +56,14 @@ describe('Test API - User registration', () => {
     });
 });
 
-describe ('Test API - User login', () => {
+describe ('Test API - Authentication', () => {
+
+    const MockAdmin = new Admin();
+    MockAdmin.society = "Facciabook";
+    MockAdmin.email = "faccia.book@domain.com";
+    MockAdmin.password = "MySecretSuperPassword";
+
+    
     const mockUser = new User();
     mockUser.name = "Mario";
     mockUser.surname = 'Rossi';
@@ -63,6 +73,9 @@ describe ('Test API - User login', () => {
     beforeEach(() => {
         db.users.clear();
         db.users.register(mockUser);
+
+        db.admins.clear();
+        db.admins.register(MockAdmin);
     });
 
 	it("Post request without body should return 400 with an error in the body", async () => {
@@ -84,7 +97,7 @@ describe ('Test API - User login', () => {
 		});
 	});
 
-	it("Post request with no registered account", async () =>{
+	it("Post request with no registered User or Admin accounts", async () =>{
 		const loginData = {
             email: "notregistered.user@test.com",
             password: "SomePasswprd"
@@ -101,9 +114,22 @@ describe ('Test API - User login', () => {
 				}
 			]
 		});
-	});
+    });
+    
+    it ("Post request with wrong password (admin)", async () => {
+        const loginData ={
+            email: "faccia.book@domain.com",
+            password: "sbagliatissimaPassword"
+        }
+        const response = await request.post("/api/v1/authentication").send(loginData);
 
-	it("Post request with wrong password", async () => {
+        expect(response.status).toBe(401);
+        expect(response.body).toMatchObject({
+            "message":"Password errata per admin"
+        });
+    });
+
+	it("Post request with wrong password (normal user)", async () => {
 		const loginData = {
             email: "mario.rossi@domain.com",
             password: "wrongPassword"
@@ -116,7 +142,17 @@ describe ('Test API - User login', () => {
 		});
 	});
 
-	it("Post request witch correct data should return 200", async () => {
+    it("Post request witch correct data should return 200 (admin)", async () => {
+		const loginData = {
+			email: "faccia.book@domain.com",
+			password: "MySecretSuperPassword"
+		};
+		const response = await request.post ("/api/v1/authentication").send(loginData);
+
+		expect(response.status).toBe(200);
+    });
+    
+	it("Post request witch correct data should return 200 (normal user)", async () => {
 		const loginData = {
 			email: "mario.rossi@domain.com",
 			password: "MySuperSecretPassword"
