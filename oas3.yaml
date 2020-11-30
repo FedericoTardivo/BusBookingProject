@@ -137,7 +137,33 @@
               
           '401':
             $ref: '#/components/responses/401Unauthorized'
-    
+
+    /autentication:
+      post:
+        description: esegue il login differenziando User "normali" da Admin
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  allOf:
+                  - $ref: '#components/schemas/AutenticationUser'
+                  - type: object
+          
+          responses:
+            '201':
+              description: Account loggato con successo
+              content:
+                application/json:
+                  schema:
+                    $ref '#components/schemas/AutenticationUser'
+            
+            '400':
+              $ref: '#/components/responses/400BadRequest'
+
+            '401'
+              $ref: '#/components/responses/401Unauthorized'
+
     /tickets:
       post:
         description: Crea un nuovo biglietto
@@ -180,6 +206,20 @@
           self:
             type: string
             example: /api/v1/object/8452
+      
+      # Autentication credentials
+      AutenticationUser:
+        type: object
+        required:
+          - email
+          - Password
+        properties:
+          email: 
+            type: string
+            example: mario.rossi@domain.com
+          password:
+            type: string
+            example: "MySecretSuperPassword"
     
       # Login credentials
       LoginUser:
@@ -300,7 +340,7 @@
           - fieldName
           - fieldMessage
           
-    # Responses such as 400 Bad Request or 401 Unauthorized
+    # Responses such as 400 Bad Request
     responses:
       400BadRequest:
         description: Richiesta invalida. Parametri non validi e/o parametri obbligatori mancanti
