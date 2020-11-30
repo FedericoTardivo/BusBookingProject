@@ -1,6 +1,6 @@
 const express = require('express');
 
-const {createUser, loginUser} = require('../controllers/users.js');
+const {createUser, Authentication} = require('../controllers/users.js');
 
 const router = express.Router();
 
@@ -8,6 +8,6 @@ const router = express.Router();
 router.post('/', createUser);
 
 // POST: Logs a user in
-router.post('/login', loginUser);
+router.post('/', Authentication);
 
 module.exports = router;
