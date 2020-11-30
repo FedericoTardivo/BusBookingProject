@@ -112,7 +112,7 @@
                   fieldName: email
                   fieldMessage: L'email "mario.rossi@domain.com" è già registrata
 
-    /autentication:
+    /authentication:
       post:
         description: esegue il login differenziando User "normali" da Admin
           requestBody:
@@ -121,7 +121,7 @@
               application/json:
                 schema:
                   allOf:
-                  - $ref: '#components/schemas/AutenticationUser'
+                  - $ref: '#components/schemas/AuthenticationUser'
                   - type: object
           
           responses:
@@ -130,7 +130,7 @@
               content:
                 application/json:
                   schema:
-                    $ref '#components/schemas/AutenticationUser'
+                    $ref '#components/schemas/AuthenticationUser'
             
             '400':
               $ref: '#/components/responses/400BadRequest'
@@ -182,7 +182,7 @@
             example: /api/v1/object/8452
       
       # Autentication credentials
-      AutenticationUser:
+      AuthenticationUser:
         type: object
         required:
           - email

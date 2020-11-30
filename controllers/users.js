@@ -76,13 +76,14 @@ module.exports.createUser = (req, res) => {
     res.location("/api/v1/users/" + id).status(201).json(resObj);
 }
 
-module.exports.loginUser = (req, res) => {
+module.exports.Authentication = (req, res) => {
 	//Create the User before authentication
 	let user = new UserLogin();
 	user.email = req.body.email;
 	user.password = req.body.password;
 
-	let valid = true;
+    let valid = true;
+    let isAdmin = false;
     let errResp = new BadRequestResponse();
 	
 	//Validate email
@@ -105,7 +106,19 @@ module.exports.loginUser = (req, res) => {
 	
 	// at this point, email and password are valid
     
-	// check if user is registered	
+    // check if user is registered as admin
+    let tempAdmin = db.admins.get().find(u => u.email == user.email);
+    if (tempAdmin != null) {    //significa che l'utente che sta per accedere è un admin
+        //check if the entered password matches
+        if (user.password != tempAdmin.password){
+            return res.status(401).json(errResp);
+        } else {
+            //request is valid and the admin can log, return ID admin
+            return res.status(200).send("admin " + tempAdmin.id + "loggato");
+        }
+    }
+
+	// check if user is registered (normal user)
 	let tempUser = db.users.get().find(u => u.email == user.email);
 	if (tempUser == null) {
 		errResp.message = 'Utente inserito non è esistente';

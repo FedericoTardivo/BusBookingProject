@@ -66,7 +66,7 @@ describe ('Test API - User login', () => {
     });
 
 	it("Post request without body should return 400 with an error in the body", async () => {
-		const response = await request.post("/api/v1/users/login");
+		const response = await request.post("/api/v1/authentication");
 
 		expect(response.status).toBe(400);
 		expect(response.body).toMatchObject({
@@ -89,7 +89,7 @@ describe ('Test API - User login', () => {
             email: "notregistered.user@test.com",
             password: "SomePasswprd"
         };
-		const response = await request.post("/api/v1/users/login").send(loginData);
+		const response = await request.post("/api/v1/authentication").send(loginData);
 
 		expect(response.status).toBe(401);
 		expect(response.body).toMatchObject({
@@ -108,7 +108,7 @@ describe ('Test API - User login', () => {
             email: "mario.rossi@domain.com",
             password: "wrongPassword"
         };
-		const response = await request.post("/api/v1/users/login").send(loginData);
+		const response = await request.post("/api/v1/authentication").send(loginData);
 
 		expect(response.status).toBe(401);
 		expect(response.body).toMatchObject({
@@ -121,7 +121,7 @@ describe ('Test API - User login', () => {
 			email: "mario.rossi@domain.com",
 			password: "MySuperSecretPassword"
 		};
-		const response = await request.post ("/api/v1/users/login").send(loginData);
+		const response = await request.post ("/api/v1/authentication").send(loginData);
 
 		expect(response.status).toBe(200);
 	});
