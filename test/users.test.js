@@ -75,7 +75,7 @@ describe ('Test API - Authentication', () => {
         db.users.register(mockUser);
 
         db.admins.clear();
-        db.admins.register(MockAdmin);
+        db.admins.insert(MockAdmin);
     });
 
 	it("Post request without body should return 400 with an error in the body", async () => {
