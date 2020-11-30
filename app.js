@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const usersRoutes = require('./routes/users.js');
 const ticketsRoutes = require('./routes/tickets.js');
 const linesRoutes = require('./routes/lines.js');
+const authenticationRoutes = require('./routes/authentication.js');
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use('/api/v1/users', usersRoutes);
 /* set root route for ticketsRoutes */
 app.use('/api/v1/tickets', ticketsRoutes);
 app.use('/api/v1/lines', linesRoutes);
+app.use('/api/v1/authentication', authenticationRoutes);
 
 /* Default 404 handler */
 app.use((req, res) => {
