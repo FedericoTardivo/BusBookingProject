@@ -112,6 +112,69 @@
                   fieldName: email
                   fieldMessage: L'email "mario.rossi@domain.com" è già registrata
 
+    /users/{id}/tickets:
+      get:
+        description: Ottiene un elenco di tutti i biglietti acquistati dall'utente
+        parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID dell'utente
+        - in: query
+          name: offset
+          schema:
+            type: integer
+          description: Numero di biglietti da saltare prima di iniziare a raccogliere gli elementi. Usato per la paginazione dei risultati
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Numero di biglietti da restituire. Usato per la paginazione dei risultati
+        - in: query
+          name: date_start
+          schema:
+            type: string
+            format: date
+          description: Data di inizio dell'intervallo da restituire. Usato per il filtraggio dei dati
+        - in: query
+          name: date_end
+          schema:
+            type: string
+            format: date
+          description: Data di fine dell'intervallo da restituire. Usato per il filtraggio dei dati
+        - in: query
+          name: line
+          schema:
+            type: integer
+          description: Numero della linea dei biglietti da restituire. Usato per il filtraggio dei dati
+        - in: query
+          name: start_stop
+          schema:
+            type: string
+          description: Fermata di salita dei biglietti da restituire. Usato per il filtraggio dei dati
+        - in: query
+          name: end_stop
+          schema:
+            type: string
+          description: Fermata di discesa dei biglietti da restituire. Usato per il filtraggio dei dati
+        responses:
+          '200':
+            description: Richiesta avvenuta con successo
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Ticket'
+          '401':
+            $ref: '#/components/responses/401Unauthorized'
+            
+          '403':
+            $ref: '#/components/responses/403Forbidden'
+
     /users/login:
       post: 
         description: esegue il login dell'utente
@@ -326,9 +389,18 @@
 
       # Unauthorized response
       401Unauthorized:
-        description: Utente non autorizzato.
+        description: L'utente non è autenticato.
         content:
           text/plain:
             schema:
               type: string
-              example: Utente non autorizzato.
+              example: Utente non autenticato.
+
+      # Forbidden response
+      403Forbidden:
+        description: L'utente è autenticato ma l'accesso alla risorsa non è autorizzato.
+        content:
+          text/plain:
+            schema:
+              type: string
+              example: Accesso non autorizzato.
