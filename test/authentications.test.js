@@ -77,7 +77,7 @@ describe ('Test API - Authentication', () => {
 
         expect(response.status).toBe(401);
         expect(response.body).toMatchObject({
-            "message":"Password errata per admin"
+            "message": "Password errata per admin"
         });
     });
 

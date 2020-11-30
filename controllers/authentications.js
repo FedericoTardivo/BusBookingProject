@@ -39,6 +39,7 @@ module.exports.authenticationUser = (req, res) => {
     if (tempAdmin != null) {    //significa che l'utente che sta per accedere è un admin
         //check if the entered password matches
         if (user.password != tempAdmin.password){
+			errResp.message = 'Password errata per admin'
             return res.status(401).json(errResp);
         } else {
             //request is valid and the admin can log, return ID admin
