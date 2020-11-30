@@ -16,7 +16,7 @@ app.use(bodyParser.json());
  * https://expressjs.com/it/guide/using-middleware.html
  */
 app.use((req, res, next) => {
-    req.loggedUser = req.query.user;
+    req.loggedUserId = req.query.userId;
     next();
 });
 
