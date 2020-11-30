@@ -114,29 +114,29 @@
 
     /authentication:
       post:
-        description: esegue il login differenziando User "normali" da Admin
-          requestBody:
-            required: true
+        description: esegue il login differenziando User "normali" ed Admin
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+               allOf:
+                - $ref: '#components/schemas/AuthenticationUser'
+                - type: object
+          
+        responses:
+          '201':
+            description: Account loggato con successo
             content:
               application/json:
                 schema:
-                  allOf:
-                  - $ref: '#components/schemas/AuthenticationUser'
-                  - type: object
-          
-          responses:
-            '201':
-              description: Account loggato con successo
-              content:
-                application/json:
-                  schema:
-                    $ref '#components/schemas/AuthenticationUser'
+                  $ref: '#components/schemas/AuthenticationUser'
             
-            '400':
-              $ref: '#/components/responses/400BadRequest'
+          '400':
+            $ref: '#/components/responses/400BadRequest'
 
-            '401'
-              $ref: '#/components/responses/401Unauthorized'
+          '401':
+            $ref: '#/components/responses/401Unauthorized'
 
     /tickets:
       post:
