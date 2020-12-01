@@ -1,11 +1,12 @@
 class Ticket{
     constructor(){
-        this.utente='';
-        this.linea='';
-        this.fermataPartenza='';
-        this.fermataArrivo='';
-        this.orarioPartenza='';
-        this.orarioArrivo='';
+        this.issueDate = Date.now();
+        this.userId = '';
+        this.lineId = '';
+        this.startStopId = '';
+        this.endStopId = '';
+        this.startTime = '';
+        this.arrivalTime = '';
     }
 }
 

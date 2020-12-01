@@ -3,7 +3,7 @@ const UserLogin = require('../models/UserLogin.js');
 const BadRequestResponse = require('../models/BadRequestResponse.js');
 const FieldError = require('../models/FieldError.js');
 
-const db = require("../lib/db");
+const db = require("../lib/mockDB");
 
 module.exports.createUser = (req, res) => {
     // Create a new object
@@ -142,9 +142,9 @@ module.exports.getTickets = (req, res) => {
     // Get the params from the query
     let limit = req.query.limit;
     let offset = req.query.offset;
-    let date_start = req.query.date_start;
-    let date_end = req.query.date_end;
-    let line = req.query.line;
+    let issue_start = req.query.issue_start;
+    let issue_end = req.query.issue_end;
+    let lineId = req.query.lineId;
     let start_stop = req.query.start_stop;
     let end_stop = req.query.end_stop;
     
@@ -180,27 +180,27 @@ module.exports.getTickets = (req, res) => {
         badReq.fieldsErrors.push(new FieldError("limit, offset", "limit e offset devono essere definiti insieme o rimossi entrambi"));
     }
     
-    // If date_start is defined...
-    if(date_start) {
+    // If issue_start is defined...
+    if(issue_start) {
         // ...parse it to a date
-        date_start = Date.parse(date_start);
+        issue_start = Date.parse(issue_start);
         // If parsing failed or the value is not valid...
-        if(isNaN(date_start) || date_start > Date.now()) {
+        if(isNaN(issue_start) || issue_start > Date.now()) {
             // ...invalidate the request
             valid = false;
-            badReq.fieldsErrors.push(new FieldError("date_start", "Il parametro deve essere una data precedente o uguale a oggi"));
+            badReq.fieldsErrors.push(new FieldError("issue_start", "Il parametro deve essere una data precedente o uguale a oggi"));
         }
     }
 
-    // If date_end is defined...
-    if(date_end) {
+    // If issue_end is defined...
+    if(issue_end) {
         // ...parse it to a date
-        date_end = Date.parse(date_end);
+        issue_end = Date.parse(issue_end);
         // If parsing failed or the value is not valid...
-        if(isNaN(date_end) || date_end > Date.now()) {
+        if(isNaN(issue_end) || issue_end > Date.now()) {
             // ...invalidate the request
             valid = false;
-            badReq.fieldsErrors.push(new FieldError("date_end", "Il parametro deve essere una data precedente o uguale a oggi"));
+            badReq.fieldsErrors.push(new FieldError("issue_end", "Il parametro deve essere una data precedente o uguale a oggi"));
         }
     }
 
@@ -211,28 +211,28 @@ module.exports.getTickets = (req, res) => {
 	}
     
     // Get all the tickets of the logged user
-    let tickets = db.tickets.get().filter(t => t.utente === req.loggedUserId)
+    let tickets = db.tickets.get().filter(t => t.userId == req.loggedUserId)
 
     // If the collection is empty, return an empty array
     if(tickets === undefined) {
         return res.status(200).json([]);
     }
 
-    // If date_start and date_end are defined
+    // If issue_start and issue_end are defined
     // and the start if after the end
     // swap the dates
-    if (date_start && date_end && date_start > date_end) {
-        const temp = date_start;
-        date_start = date_end;
-        date_end = temp;
+    if (issue_start && issue_end && issue_start > issue_end) {
+        const temp = issue_start;
+        issue_start = issue_end;
+        issue_end = temp;
     }
 
     // Filter by date if required
-    if(date_start) tickets = tickets.filter(t => t.partenza >= date_start);
-    if(date_end) tickets = tickets.filter(t => t.arrivo <= date_end);
+    if(issue_start) tickets = tickets.filter(t => t.issueDate >= issue_start);
+    if(issue_end) tickets = tickets.filter(t => t.issueDate <= issue_end);
 
-    // Filter by line if required
-    if(line) tickets = tickets.filter(t => t.line == line);
+    // Filter by lineId if required
+    if(lineId) tickets = tickets.filter(t => t.lineId == lineId);
 
     // Filter by stops if required
     if(start_stop) tickets = tickets.filter(t => t.start_stop == start_stop);

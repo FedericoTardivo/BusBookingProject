@@ -134,22 +134,22 @@
             type: integer
           description: Numero di biglietti da restituire. Usato per la paginazione dei risultati
         - in: query
-          name: date_start
+          name: issue_start
           schema:
             type: string
             format: date
-          description: Data di inizio dell'intervallo da restituire. Usato per il filtraggio dei dati
+          description: Data di inizio dell'intervallo ricercato per la data di emissione dei biglietti. Usato per il filtraggio dei dati
         - in: query
-          name: date_end
+          name: issue_end
           schema:
             type: string
             format: date
-          description: Data di fine dell'intervallo da restituire. Usato per il filtraggio dei dati
+          description: Data di fine dell'intervallo ricercato per la data di emissione dei biglietti. Usato per il filtraggio dei dati
         - in: query
-          name: line
+          name: lineId
           schema:
-            type: integer
-          description: Numero della linea dei biglietti da restituire. Usato per il filtraggio dei dati
+            type: string
+          description: ID della linea dei biglietti da restituire. Usato per il filtraggio dei dati
         - in: query
           name: start_stop
           schema:
