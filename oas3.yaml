@@ -28,25 +28,13 @@
                   items:
                     type: object
       post:
-        description: Imposta una nuova linea
+        description: Crea una nuova linea
         requestBody:
           required: true
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/Line'
-                  - type: object
-                    required:
-                      - number
-                      - BusStopTotal
-                    properties:
-                      number:
-                        type: integer
-                        example: 10
-                      BusStopTotal:
-                        type: integer
-                        example: 12
+                $ref: '#/components/schemas/Line'
         responses:
           '201':
             description: Linea inserita correttamente
@@ -59,7 +47,7 @@
             $ref: '#/components/responses/400BadRequest'
           
           '409':
-            description: Linea gi� esistente
+            description: Linea già esistente
             content:
               application/json:
                 schema:
@@ -256,29 +244,42 @@
       Line:
         type: object
         required:
-          - Number
-          - BusStopTotal
-          - BusStopName
-          - BusStopOrder
-          - ArrivalTime
+          - name
+          - path
         properties:
-          Number:
-            type: integer
-          BusStopTotal:
-            type: integer
-          BusStopName:
+          name:
             type: string
-          BusStopOrder:
-            type: integer
-          ArrivalTime:
-            type: string
+          path:
+            type: array
+            items:
+              $ref: '#/components/schemas/BusStopAdd'
           
       LineSelf:
         type: object
         allOf:
           - $ref: '#/components/schemas/SelfObj'
           - $ref: '#/components/schemas/Line'
-          
+      
+      BusStopAdd:
+        type: object
+        properties:
+          idBusStop:
+            type: string
+          number:
+            type: integer
+          times:
+            type: array
+            items:
+              $ref: '#/components/schemas/BusStopTimeOptions'
+
+      BusStopTimeOptions:
+        type: object
+        properties:
+          time:
+            type: string
+          accessibility:
+            type: boolean
+
       LineError:
         type: object
         properties:
