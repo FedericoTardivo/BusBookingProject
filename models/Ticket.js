@@ -1,10 +1,11 @@
 class Ticket{
     constructor(){
+        this.id = '';
         this.issueDate = Date.now();
         this.userId = '';
         this.lineId = '';
-        this.startStopId = '';
-        this.endStopId = '';
+        this.startBusStopId = '';
+        this.endBusStopId = '';
         this.startTime = '';
         this.arrivalTime = '';
     }
