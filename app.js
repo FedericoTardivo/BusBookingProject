@@ -11,6 +11,9 @@ const app = express();
 app.use(bodyParser.json());
 //app.use(urlencoded());
 
+// Middleware for serving UI
+app.use('/', express.static('UI'));
+
 /**
  * Middleware to manage authentication
  * https://expressjs.com/it/guide/writing-middleware.html
