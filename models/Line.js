@@ -1,13 +1,10 @@
 class Line {
     constructor(){
         {
-            this.number = '',
-            this.BusStopTotal = '',
-            this.BusStopName = '',
-            this.BusStopOrder = '',
-            this.ArrivalTime = '',
-            this.owner = ''
-        }
+            this.id_admin = '',
+            this.id = '',
+            this.name = '',
+            this.path =[]        }
     }
 }
 
