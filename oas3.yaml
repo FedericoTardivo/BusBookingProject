@@ -216,25 +216,30 @@
       Ticket:
         type: object
         required:
-          - utente
-          - linea
-          - fermataPartenza
-          - orarioPartenza
-          - fermataArrivo
-          - orarioArrivo
+          - issueDate
+          - userId
+          - lineId
+          - startBusStopId
+          - endBusStopId
+          - startTime
+          - arrivalTime
         properties:
-          utente:
+          issueDate:
             type: string
-            example: id dell'utente
-          linea:
+            format: date
+            example: "2020-12-31"
+          userId:
+            type: string
+            example: 67676fd-fdhfd6fdd-7f8d6fs
+          lineId:
             type : string 
-            example: linea 5
-          fermataPartenza:
+            example: ghdf-4fq4fqrf-dgref34
+          startBusStopId:
             type :  string
-            example: Povo Valoni
-          fermataArrivo:
+            example: dfdhf8df6d-dfdf76dfdf-3433fedf
+          endBusStopId:
             type : string
-            example: Venezia Corallo 
+            example: dfdhf8df6d-dfdf76dfdf-3433fedf 
           orarioPartenza:
             type : string
             example: 14,30

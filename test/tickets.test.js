@@ -21,12 +21,12 @@ describe('Test API - Tickets endpoint', () => {
     it("POST request with a ticket already bought should return 409 with an error message", async () => {
         // Buy a ticket
         const ticket = {
-            utente: "id dell'utente",
-            linea: "linea 5",
-            fermataPartenza: "Povo Valoni",
-            fermataArrivo: "Venezia Corallo",
-            orarioPartenza: "14,30",
-            orarioArrivo: "14,35"
+            userId: "id dell'utente",
+            lineId: "linea 5",
+            startBusStopId: "Povo Valoni",
+            endBusStopId: "Venezia Corallo",
+            startTime: "14,30",
+            arrivalTime: "14,35"
         }
         const correctResp = await request.post("/api/v1/tickets").send(ticket);
         if(correctResp.status != 201)
@@ -44,20 +44,20 @@ describe('Test API - Tickets endpoint', () => {
 
     it("POST request with correct data should return 201 with the data of the ticket", async () => {
         const response = await request.post("/api/v1/tickets").send({
-            utente: "id dell'utente",
-            linea: "linea 5",
-            fermataPartenza: "Povo Valoni",
-            fermataArrivo: "Venezia Corallo",
-            orarioPartenza: "14,30",
-            orarioArrivo: "14,35"
+            userId: "id dell'utente",
+            lineId: "linea 5",
+            startBusStopId: "Povo Valoni",
+            endBusStopId: "Venezia Corallo",
+            startTime: "14,30",
+            arrivalTime: "14,35"
         });
 
         expect(response.status).toBe(201);
-        expect(response.body).toHaveProperty("utente");
-        expect(response.body).toHaveProperty("linea");
-        expect(response.body).toHaveProperty("fermataPartenza");
-        expect(response.body).toHaveProperty("fermataArrivo");
-        expect(response.body).toHaveProperty("orarioPartenza");
-        expect(response.body).toHaveProperty("orarioArrivo");
+        expect(response.body).toHaveProperty("userId");
+        expect(response.body).toHaveProperty("lineId");
+        expect(response.body).toHaveProperty("startBusStopId");
+        expect(response.body).toHaveProperty("endBusStopId");
+        expect(response.body).toHaveProperty("startTime");
+        expect(response.body).toHaveProperty("arrivalTime");
     });
 });
