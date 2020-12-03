@@ -8,9 +8,70 @@
     - url: https://busbooking-ingsoft2.herokuapp.com/api/v1
 
   paths:
+    /busStops:
+      get:
+        description: Restituisce l'elenco delle fermate del servizio di trasporti specificato
+        responses:
+          '200':
+            description: Richiesta avvenuta con successo
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/BusStop'
+
+          '401':
+            $ref: '#/components/responses/401Unauthorized'
+      post:
+        description: Crea una nuova femrata dell'autobus
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - name
+                properties:
+                  name:
+                    type: string
+                    example: "Piazza Dante"
+        responses:
+          '201':
+            description: Fermata creata con successo
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - type: object
+                      properties:
+                        self:
+                          type: string
+                          example: /api/v1/busStops/123456
+                    - $ref: '#/components/schemas/BusStop'
+            headers:
+              Location:
+                schema:
+                  type: string
+                description: Link per ottenere la fermata appena creata
+          
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+            
+          '409':
+            description: Fermata già registrata
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/FieldError'
+                example:
+                  fieldName: name
+                  fieldMessage: La fermata "Piazza Dante" è già registrata
+          
     /lines:
       get:
-        description: Restituisce la lista delle fermate del servizio di trasporti specificato
+        description: Restituisce la lista delle linee del servizio di trasporti specificato
         parameters:
           - name: companyId
             required: true
@@ -327,6 +388,14 @@
           - $ref: '#/components/schemas/SelfObj'
           - $ref: '#/components/schemas/Line'
       
+      BusStop:
+        type: object
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+
       BusStopAdd:
         type: object
         properties:
