@@ -18,28 +18,28 @@ module.exports.insertTicket=(req,res)=>{
     let valid=true;
     let errResp=new BadRequestResponse();
 
-    //validate user
+    //validate userId
     if(!ticket.userId || typeof ticket.userId != 'string'){
         valid=false;
-        errResp.fieldsErrors.push(new FieldError('user','The field "user" must be a non empty string'));
+        errResp.fieldsErrors.push(new FieldError('userId','The field "userId" must be a non empty string'));
     }
 
-    //validate line
+    //validate lineId
     if(!ticket.lineId || typeof ticket.lineId != 'string'){
         valid=false;
-        errResp.fieldsErrors.push(new FieldError('line','The filed "line" must be a non empty string'));
+        errResp.fieldsErrors.push(new FieldError('lineId','The filed "lineId" must be a non empty string'));
     }
 
-    //validate startStation
-    if(!ticket.startBusStopId || typeof ticket.startBusStopId != 'string'){
+    //validate startStopId
+    if(!ticket.startStopId || typeof ticket.startStopId != 'string'){
         valid=false;
-        errResp.fieldsErrors.push(new FieldError('startStation','The field "startStation" must be a non empty string'));
+        errResp.fieldsErrors.push(new FieldError('startStopId','The field "startStopId" must be a non empty string'));
     }
 
-    //validate stopStation
-    if(!ticket.endBusStopId || typeof ticket.endBusStopId != 'string'){
+    //validate endStopId
+    if(!ticket.endStopId || typeof ticket.endStopId != 'string'){
         valid=false;
-        errResp.fieldsErrors.push(new FieldError('stopStation','The field "stopStation" must be a non empty string'));
+        errResp.fieldsErrors.push(new FieldError('endStopId','The field "endStopId" must be a non empty string'));
     }
 
     //validate startTime
@@ -48,10 +48,10 @@ module.exports.insertTicket=(req,res)=>{
         errResp.fieldsErrors.push(new FieldError('startTime','The field "startTime" must be a non empty string'));
     }
 
-    //validate stopTime
+    //validate arrivalTime
     if(!ticket.arrivalTime || typeof ticket.arrivalTime != 'string'){
         valid=false;
-        errResp.fieldsErrors.push(new FieldError('stopTime','The field "stopTime" must be a non empty string'));
+        errResp.fieldsErrors.push(new FieldError('arrivalTime','The field "arrivalTime" must be a non empty string'));
     }
 
     //If something is not valid, send a BadRequest error
