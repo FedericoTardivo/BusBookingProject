@@ -7,6 +7,6 @@ const router = express.Router();
 // POST: Register a new user
 router.post('/', createUser);
 
-router.get('/:id/tickets', getTickets); 
+router.get('/:_id/tickets', getTickets); 
 
 module.exports = router;

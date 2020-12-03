@@ -79,8 +79,8 @@ module.exports.insertLine = async (req, res) => {
     }
 
     //if, instead, the request is valid
-    line.id = await db.lines.insert(line);
+    line._id = await db.lines.insert(line);
     
-    line.self = `/api/v1/lines/${line.id}`;
-    res.location(`/api/v1/lines/${line.id}`).status(201).json(line);
+    line.self = `/api/v1/lines/${line._id}`;
+    res.location(`/api/v1/lines/${line._id}`).status(201).json(line);
 }

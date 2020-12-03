@@ -62,17 +62,17 @@ module.exports.createUser = async (req, res) => {
     // The request is valid
 
     // Create an ID for the new user
-    const id = await db.users.register(user);
+    const _id = await db.users.register(user);
     
     let resObj = {
-        self: `/api/v1/users/${id}`,
+        self: `/api/v1/users/${_id}`,
         name: user.name,
         surname: user.surname,
         email: user.email
     };
 
     // Send back the newly created user
-    res.location("/api/v1/users/" + id).status(201).json(resObj);
+    res.location("/api/v1/users/" + _id).status(201).json(resObj);
 }
 
 module.exports.getTickets = async (req, res) => {
@@ -82,7 +82,7 @@ module.exports.getTickets = async (req, res) => {
     }
 
     // Check if the user is authorized (a user cannot see the tickets of another user)
-    if(req.params.id != req.loggedUserId) {
+    if(req.params._id != req.loggedUserId) {
         return res.status(403).send("Accesso non autorizzato.");
     }
 
