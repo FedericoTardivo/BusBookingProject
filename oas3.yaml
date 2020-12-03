@@ -109,7 +109,7 @@
             application/json:
               schema:
                allOf:
-                - $ref: '#components/schemas/AuthenticationUser'
+                - $ref: '#/components/schemas/AuthenticationUser'
                 - type: object
           
         responses:
@@ -118,7 +118,7 @@
             content:
               application/json:
                 schema:
-                  $ref: '#components/schemas/AuthenticationUser'
+                  $ref: '#/components/schemas/AuthenticationUser'
             
           '400':
             $ref: '#/components/responses/400BadRequest'
