@@ -58,6 +58,9 @@
           
           '400':
             $ref: '#/components/responses/400BadRequest'
+
+          '401':
+            $ref: '#/components/responses/401Unauthorized'
             
           '409':
             description: Fermata già registrata
@@ -391,7 +394,7 @@
       BusStop:
         type: object
         properties:
-          id:
+          _id:
             type: string
           name:
             type: string
