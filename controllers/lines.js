@@ -8,7 +8,7 @@ const FieldErr = require('../models/FieldError.js');
 module.exports.insertLine = (req, res) => {
     const line = new Line();
     // Set the owner of the line as the logged user
-    //line.id_admin = req.body.loggeduser?.id;
+    //line.id_admin = req.loggedUserId;
     line.id_admin = 'abc';
     line.name = req.body.name;
     line.path = req.body.path;
@@ -73,8 +73,8 @@ module.exports.insertLine = (req, res) => {
 
     //if a line is already present in the db, this Sends an error, signalling it
     // TODO: Remove this line
-    req.body.loggedUser = "abc";
-    if(db.lines.get().find(l => l.name == line.name && l.id_admin == req.body.loggedUser)){
+    req.body.loggedUserId = "abc";
+    if(db.lines.get().find(l => l.name == line.name && l.id_admin == req.body.loggedUserId)){
         return res.status(409).json({
             fieldName: "name",
             fieldMessage: `La linea \"${line.name}\" è già esistente`
