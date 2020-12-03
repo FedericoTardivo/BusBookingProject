@@ -126,12 +126,12 @@
           '401':
             $ref: '#/components/responses/401Unauthorized'
 
-    /users/{id}/tickets:
+    /users/{_id}/tickets:
       get:
         description: Ottiene un elenco di tutti i biglietti acquistati dall'utente
         parameters:
         - in: path
-          name: id
+          name: _id
           required: true
           schema:
             type: string

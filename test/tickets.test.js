@@ -21,7 +21,7 @@ describe('Test API - Tickets endpoint', () => {
     it("POST request with a ticket already bought should return 409 with an error message", async () => {
         // Buy a ticket
         const ticket = {
-            userId: "id dell'utente",
+            userId: "_id dell'utente",
             lineId: "linea 5",
             startBusStopId: "Povo Valoni",
             endBusStopId: "Venezia Corallo",
@@ -44,7 +44,7 @@ describe('Test API - Tickets endpoint', () => {
 
     it("POST request with correct data should return 201 with the data of the ticket", async () => {
         const response = await request.post("/api/v1/tickets").send({
-            userId: "id dell'utente",
+            userId: "_id dell'utente",
             lineId: "linea 5",
             startBusStopId: "Povo Valoni",
             endBusStopId: "Venezia Corallo",

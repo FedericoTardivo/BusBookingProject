@@ -45,7 +45,7 @@ module.exports.authenticationUser = async (req, res) => {
             return res.status(401).json(errResp);
         } else {
             //request is valid and the admin can log, return ID admin
-            return res.status(200).send("admin " + tempAdmin.id + "loggato");
+            return res.status(200).send("admin " + tempAdmin._id + "loggato");
         }
     }
 
@@ -62,7 +62,7 @@ module.exports.authenticationUser = async (req, res) => {
 			return res.status(401).json(errResp);
 		} else {
 			//request is valid, return ID user
-			return res.status(200).send("utente " + tempUser.id + " loggato");
+			return res.status(200).send("utente " + tempUser._id + " loggato");
 		}
 
 	}

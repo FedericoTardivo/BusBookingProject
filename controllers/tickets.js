@@ -71,10 +71,10 @@ module.exports.insertTicket=async (req,res)=>{
 
     //The request is valid
 
-    //create id for ticket
-    const id=await db.tickets.insert(ticket);
+    //create _id for ticket
+    const _id=await db.tickets.insert(ticket);
 
     //response e console log
-    res.location("/api/v1/tickets/" + id).status(201).json(ticket);
-    console.log("ticket " + id + " added");
+    res.location("/api/v1/tickets/" + _id).status(201).json(ticket);
+    console.log("ticket " + _id + " added");
 };

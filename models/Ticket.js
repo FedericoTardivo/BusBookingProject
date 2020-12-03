@@ -1,6 +1,6 @@
 class Ticket{
     constructor(){
-        this.id = '';
+        this._id = '';
         this.issueDate = Date.now();
         this.userId = '';
         this.lineId = '';
