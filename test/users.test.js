@@ -67,6 +67,10 @@ describe ('Test API - BookingReview', () => {
     beforeEach(async() => {
         await db.users.clear();
 		IDUSER = await db.users.register(mockUser);
+    });
+    
+    afterAll(async () => {
+		await db.users.clear();
 	});
 
     it("Get request with wrong parameters should return 400 (limit test)", async () => {

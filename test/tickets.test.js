@@ -10,6 +10,10 @@ describe('Test API - Tickets endpoint', () => {
         await db.tickets.clear();
     })
 
+    afterAll(async () => {
+		await db.tickets.clear();
+	});
+
     it("POST request without body should return 400", async () => {
         const response = await request.post("/api/v1/tickets");
 

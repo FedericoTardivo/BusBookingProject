@@ -4,9 +4,6 @@ const supertest = require('supertest');
 const request = supertest(app);
 
 describe('Test API - Line insertion', () =>{
-    afterAll((done) =>{
-        done();
-    })
     it("POST request without body should return 400 with an error in the body", async()=>{
         const response = await request.post("/api/v1/lines");
 
