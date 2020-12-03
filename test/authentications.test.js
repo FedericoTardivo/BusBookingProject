@@ -86,7 +86,7 @@ describe ('Test API - Authentication', () => {
 
 	it("Post request with wrong password (normal user)", async () => {
 		const loginData = {
-            email: "mario.rossi@domain.com",
+            email: mockUser.email,
             password: "wrongPassword"
         };
 		const response = await request.post("/api/v1/authentication").send(loginData);
@@ -107,12 +107,11 @@ describe ('Test API - Authentication', () => {
 		expect(response.status).toBe(200);
     });
     
-	it("Post request witch correct data should return 200 (normal user)", async () => {
+	it("Post request with correct data should return 200 (normal user)", async () => {
 		const loginData = {
 			email: mockUser.email,
-			password: mockUser.email
+			password: mockUser.password
 		};
-		console.log(loginData);
 		const response = await request.post ("/api/v1/authentication").send(loginData);
 
 		expect(response.status).toBe(200);
