@@ -1,8 +1,29 @@
 const BusStop = require('../models/BusStop.js')
 
-const db = require ('../lib/db.js');
+const db = require('../lib/db.js');
 const BadRequestResponse = require('../models/BadRequestResponse.js');
-const FieldErr = require('../models/FieldError.js');
+const FieldError = require('../models/FieldError.js');
+
+// Gets an array containing all the bus stops of the logged admin
+module.exports.getBusStops = async (req, res) => {
+    // Check if the user is authenticated
+    if(!req.loggedUserId) {
+        return res.status(401).send("Utente non autenticato.");
+    }
+
+    // Get all the bus stops from the DB
+    const stops = await db.busStops.findBy({adminId: req.loggedUserId});
+
+    // Return the response mapping the objects
+    // so they have the right properties
+    res.status(200).json(stops.map(bs => {
+        return {
+            self: `/api/v1/busStops/${bs._id}`,
+            _id: bs._id,
+            name: bs.name
+        };
+    }));
+};
 
 // Registers a new bus stop in the DB
 module.exports.insertBusStop = async (req, res) => {

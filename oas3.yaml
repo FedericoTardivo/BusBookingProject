@@ -19,7 +19,12 @@
                 schema:
                   type: array
                   items:
-                    $ref: '#/components/schemas/BusStop'
+                    allOf:
+                      - type: object
+                        properties:
+                          self:
+                            type: string
+                      - $ref: '#/components/schemas/BusStop'
 
           '401':
             $ref: '#/components/responses/401Unauthorized'
