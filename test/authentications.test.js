@@ -22,12 +22,11 @@ describe ('Test API - Authentication', () => {
     mockUser.email = 'mario.rossi@domain.com';
     mockUser.password = 'MySuperSecretPassword';
 
-    beforeEach(() => {
-        db.users.clear();
-        db.users.register(mockUser);
-
-        db.admins.clear();
-        db.admins.insert(MockAdmin);
+    beforeEach(async () => {
+        await db.users.clear();
+        await db.users.register(mockUser);
+        await db.admins.clear();
+        await db.admins.insert(MockAdmin);
     });
 
 	it("Post request without body should return 400 with an error in the body", async () => {
@@ -90,7 +89,7 @@ describe ('Test API - Authentication', () => {
 
 		expect(response.status).toBe(401);
 		expect(response.body).toMatchObject({
-			"message": "Password errata"
+			"message": "Password errata per user"
 		});
 	});
 

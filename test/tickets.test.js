@@ -6,8 +6,8 @@ const db = require("../lib/db.js");
 const request = supertest(app);
 
 describe('Test API - Tickets endpoint', () => {
-    beforeEach(() => {
-        db.tickets.deleteAll();
+    beforeEach(async () => {
+        await db.tickets.clear();
     })
 
     it("POST request without body should return 400", async () => {
@@ -25,8 +25,8 @@ describe('Test API - Tickets endpoint', () => {
             lineId: "linea 5",
             startBusStopId: "Povo Valoni",
             endBusStopId: "Venezia Corallo",
-            startTime: "14,30",
-            arrivalTime: "14,35"
+            startTime: "14:30",
+            arrivalTime: "14:35"
         }
         const correctResp = await request.post("/api/v1/tickets").send(ticket);
         if(correctResp.status != 201)
@@ -48,8 +48,8 @@ describe('Test API - Tickets endpoint', () => {
             lineId: "linea 5",
             startBusStopId: "Povo Valoni",
             endBusStopId: "Venezia Corallo",
-            startTime: "14,30",
-            arrivalTime: "14,35"
+            startTime: "14:30",
+            arrivalTime: "14:35"
         });
 
         expect(response.status).toBe(201);

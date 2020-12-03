@@ -1,7 +1,7 @@
 class Line {
     constructor(){
         {
-            this.id_admin = '',
+            this.adminId = '',
             this.id = '',
             this.name = '',
             this.path =[]        }

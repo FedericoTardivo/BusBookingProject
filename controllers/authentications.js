@@ -5,7 +5,7 @@ const FieldError = require('../models/FieldError.js');
 
 const db = require("../lib/db");
 
-module.exports.authenticationUser = (req, res) => {
+module.exports.authenticationUser = async (req, res) => {
 	//Create the User before authentication
 	let user = new UserLogin();
 	user.email = req.body.email;
@@ -36,10 +36,11 @@ module.exports.authenticationUser = (req, res) => {
 	// at this point, email and password are valid
     
     // check if user is registered as admin
-    let tempAdmin = db.admins.get().find(u => u.email == user.email);
-    if (tempAdmin != null) {    //significa che l'utente che sta per accedere è un admin
+    let tempAdmin = await db.admins.findBy({email : user.email});
+    if (tempAdmin.length > 0) {    //significa che l'utente che sta per accedere è un admin
         //check if the entered password matches
-        if (user.password != tempAdmin.password){
+		console.log(tempAdmin);
+		if (user.password != tempAdmin.password){
 			errResp.message = 'Password errata per admin'
             return res.status(401).json(errResp);
         } else {
@@ -49,15 +50,15 @@ module.exports.authenticationUser = (req, res) => {
     }
 
 	// check if user is registered (normal user)
-	let tempUser = db.users.get().find(u => u.email == user.email);
-	if (tempUser == null) {
+	let tempUser = await db.users.findBy({email : user.email});
+	if (tempUser.length == 0) {
 		errResp.message = 'Utente inserito non è esistente';
 		errResp.fieldsErrors.push( new FieldError('email', 'Email does not exist'));
 		return res.status(401).json(errResp);
-	} else{
+	} else {
 		//check if the entered password matches
 		if (user.password != tempUser.password){
-			errResp.message = 'Password errata'
+			errResp.message = 'Password errata per user'
 			return res.status(401).json(errResp);
 		} else {
 			//request is valid, return ID user

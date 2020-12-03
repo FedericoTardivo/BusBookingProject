@@ -6,7 +6,7 @@ const Ticket = require('../models/Ticket.js');
 
 
 /* insert ticket from body of POST request */
-module.exports.insertTicket=(req,res)=>{
+module.exports.insertTicket=async (req,res)=>{
     let ticket=new Ticket();
     ticket.userId=req.body.userId;
     ticket.lineId=req.body.lineId;
@@ -31,15 +31,15 @@ module.exports.insertTicket=(req,res)=>{
     }
 
     //validate startStopId
-    if(!ticket.startStopId || typeof ticket.startStopId != 'string'){
+    if(!ticket.startBusStopId || typeof ticket.startBusStopId != 'string'){
         valid=false;
-        errResp.fieldsErrors.push(new FieldError('startStopId','The field "startStopId" must be a non empty string'));
+        errResp.fieldsErrors.push(new FieldError('startBusStopId','The field "startBusStopId" must be a non empty string'));
     }
 
     //validate endStopId
-    if(!ticket.endStopId || typeof ticket.endStopId != 'string'){
+    if(!ticket.endBusStopId || typeof ticket.endBusStopId != 'string'){
         valid=false;
-        errResp.fieldsErrors.push(new FieldError('endStopId','The field "endStopId" must be a non empty string'));
+        errResp.fieldsErrors.push(new FieldError('endBusStopId','The field "endBusStopId" must be a non empty string'));
     }
 
     //validate startTime
@@ -61,7 +61,7 @@ module.exports.insertTicket=(req,res)=>{
     }
 
     //check if ticket is already bought
-    if(db.tickets.get().find(u => u.userId == ticket.userId && u.lineId == ticket.lineId && u.startBusStopId == ticket.startBusStopId && u.endBusStopId == ticket.endBusStopId && u.startTime == ticket.startTime && u.arrivalTime == ticket.arrivalTime)) 
+    if((await db.tickets.findBy({userId : ticket.userId , lineId : ticket.lineId , startBusStopId : ticket.startBusStopId , endBusStopId : ticket.endBusStopId , startTime : ticket.startTime , arrivalTime : ticket.arrivalTime})).length>0)
     {
         return res.status(409).json({
             fieldName: "ticket",
@@ -72,7 +72,7 @@ module.exports.insertTicket=(req,res)=>{
     //The request is valid
 
     //create id for ticket
-    const id=db.tickets.insert(ticket);
+    const id=await db.tickets.insert(ticket);
 
     //response e console log
     res.location("/api/v1/tickets/" + id).status(201).json(ticket);

@@ -2,9 +2,9 @@ const User = require('../models/User.js');
 const BadRequestResponse = require('../models/BadRequestResponse.js');
 const FieldError = require('../models/FieldError.js');
 
-const db = require("../lib/mockDB");
+const db = require("../lib/db.js");
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = async (req, res) => {
     // Create a new object
     let user = new User();
     user.name = req.body.name;
@@ -51,7 +51,7 @@ module.exports.createUser = (req, res) => {
     }
 
     // Check if the email is already registered
-    if(db.users.get().find(u => u.email == user.email)) 
+    if((await db.users.findBy({email : user.email})).length > 0)
     {
         return res.status(409).json({
             fieldName: "email",
@@ -62,7 +62,7 @@ module.exports.createUser = (req, res) => {
     // The request is valid
 
     // Create an ID for the new user
-    const id = db.users.register(user);
+    const id = await db.users.register(user);
     
     let resObj = {
         self: `/api/v1/users/${id}`,
@@ -75,55 +75,7 @@ module.exports.createUser = (req, res) => {
     res.location("/api/v1/users/" + id).status(201).json(resObj);
 }
 
-module.exports.loginUser = (req, res) => {
-	//Create the User before authentication
-	let user = new UserLogin();
-	user.email = req.body.email;
-	user.password = req.body.password;
-
-	let valid = true;
-    let errResp = new BadRequestResponse();
-	
-	//Validate email
-	if (!user.email || typeof user.email != 'string' || !checkIfEmailInString(user.email)) {
-		valid = false;
-		errResp.fieldsErrors.push (new FieldError('email', 'The field "email" must be a valid email address'));
-	}
-
-	//Validate password
-	if (!user.password || typeof user.password != 'string'){
-		valid = false;
-		errResp.fieldsErrors.push( new FieldError('password', 'The field "password" must be provided'));
-	}
-
-	// If Something is not valid, send a BadRequest error
-	if(!valid){
-		errResp.message = 'La richiesta non è valida.'
-		return res.status(400).json(errResp);
-	}
-	
-	// at this point, email and password are valid
-    
-	// check if user is registered	
-	let tempUser = db.users.get().find(u => u.email == user.email);
-	if (tempUser == null) {
-		errResp.message = 'Utente inserito non è esistente';
-		errResp.fieldsErrors.push( new FieldError('email', 'Email does not exist'));
-		return res.status(401).json(errResp);
-	} else{
-		//check if the entered password matches
-		if (user.password != tempUser.password){
-			errResp.message = 'Password errata'
-			return res.status(401).json(errResp);
-		} else {
-			//request is valid, return ID user
-			return res.status(200).send("utente " + tempUser.id + " loggato");
-		}
-
-	}
-};
-
-module.exports.getTickets = (req, res) => {
+module.exports.getTickets = async (req, res) => {
     // Check if the user is authenticated
     if(!req.loggedUserId) {
         return res.status(401).send("Utente non autenticato.");
@@ -210,10 +162,10 @@ module.exports.getTickets = (req, res) => {
 	}
     
     // Get all the tickets of the logged user
-    let tickets = db.tickets.get().filter(t => t.userId == req.loggedUserId)
+    let tickets = await db.tickets.findBy({_id : req.loggedUserId});
 
     // If the collection is empty, return an empty array
-    if(tickets === undefined) {
+    if(tickets == []) {
         return res.status(200).json([]);
     }
 
