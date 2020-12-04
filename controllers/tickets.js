@@ -76,5 +76,5 @@ module.exports.insertTicket=async (req,res)=>{
 
     //response e console log
     res.location("/api/v1/tickets/" + _id).status(201).json(ticket);
-    console.log("ticket " + _id + " added");
+    //console.log("ticket " + _id + " added");
 };

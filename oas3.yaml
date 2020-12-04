@@ -29,7 +29,7 @@
           '401':
             $ref: '#/components/responses/401Unauthorized'
       post:
-        description: Crea una nuova femrata dell'autobus
+        description: Crea una nuova fermata dell'autobus
         requestBody:
           required: true
           content:
