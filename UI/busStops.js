@@ -1,7 +1,7 @@
 function refreshBusStopsTable() {
     // Load the busStops and show them in the table
     $.ajax({
-        url: "http://localhost:8000/api/v1/busStops?" + $.param({userId: "abc"})
+        url: "/api/v1/busStops?" + $.param({userId: "abc"})
     })
         .done((result) => {
             var table = $("#busStopsTable tbody");
@@ -22,7 +22,7 @@ function addBusStop() {
 
     var newName = $("#busStopName").val();
     $.ajax({
-        url: "http://localhost:8000/api/v1/busStops?" + $.param({userId: "abc"}),
+        url: "/api/v1/busStops?" + $.param({userId: "abc"}),
         type: "POST",
         data: JSON.stringify({name: newName}),
         contentType: "application/json",
