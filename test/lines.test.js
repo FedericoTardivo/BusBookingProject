@@ -1,9 +1,15 @@
 const app = require('../app.js');
 const supertest = require('supertest');
+const db = require('../lib/db.js');
 
 const request = supertest(app);
 
 describe('Test API - Line insertion', () =>{
+
+    afterAll(async () => {
+      await db.lines.clear();
+    });
+
     it("POST request without body should return 400 with an error in the body", async()=>{
         const response = await request.post("/api/v1/lines");
 

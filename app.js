@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 
 const usersRoutes = require('./routes/users.js');
 const ticketsRoutes = require('./routes/tickets.js');
+const busStopsRoutes = require('./routes/busStops.js');
 const linesRoutes = require('./routes/lines.js');
 const authenticationRoutes = require('./routes/authentication.js');
 
@@ -27,6 +28,7 @@ app.use((req, res, next) => {
 app.use('/api/v1/users', usersRoutes);
 /* set root route for ticketsRoutes */
 app.use('/api/v1/tickets', ticketsRoutes);
+app.use('/api/v1/busStops', busStopsRoutes);
 app.use('/api/v1/lines', linesRoutes);
 app.use('/api/v1/authentication', authenticationRoutes);
 
