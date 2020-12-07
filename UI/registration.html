@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <title>Registrazione utente - BusBooking</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+    <script src="registration.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+        <div class="container">
+        <a class="navbar-brand" href="index.html">BusBooking</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" _id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="./index.html">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="registration.html">Registrati</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="login.html">Login</a>
+            </li>
+            </ul>
+        </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <main role="main">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    Registrati come nuovo utente
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger" id="formAlert" role="alert" style="display: none;">
+                        <p><strong>Errore!</strong> Si è verificato un errore durante la registrazione.</p>
+                        <hr>
+                        <p class="mb-0" id="formErrMsg"></p>
+                    </div>
+                    <div class="alert alert-success" id="formAlertSuccess" role="alert" style="display: none;">
+                        Registrazione avvenuta con successo!
+                    </div>
+                    <form>
+                        <div class="form-group">
+                            <label for="userName">Nome</label>
+                            <input type="text" class="form-control" id="userName" required>
+                            <label for="userSurname">Cognome</label>
+                            <input type="text" class="form-control" id="userSurname" required>
+                            <label for="userEmail">Email</label>
+                            <input type="text" class="form-control" id="userEmail" required>
+                            <label for="userPassword">Password</label>
+                            <input type="text" class="form-control" id="userPassword" required>
+                            <label for="userConfirmPassword">Conferma password</label>
+                            <input type="text" class="form-control" id="userConfirmPassword" required>
+                        </div>
+                        <button class="btn btn-primary" type="button" onclick="registerUser()">Registrati</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="footer fixed-bottom py-3">
+        <div class="container text-center">
+            <span class="text-muted">Progetto del gruppo #32 per il corso di Ingegneria del Software 2 - UniTN</span>
+        </div>
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+</body>
+</html>
