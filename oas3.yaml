@@ -182,12 +182,14 @@
                 - type: object
           
         responses:
-          '201':
+          '200':
             description: Account loggato con successo
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/AuthenticationUser'
+                  type: object
+                  items:
+                    $ref: '#/components/schemas/AuthenticationUser'
             
           '400':
             $ref: '#/components/responses/400BadRequest'
