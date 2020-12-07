@@ -20,11 +20,13 @@ function login() {
             sessionStorage.setItem("LoggedUserID", result.id);
             sessionStorage.setItem("LoggedUserType", result.type);
             
-            window.location.href="/DashBoard.html";
+            if(result.type == "user"){
+                window.location.href="/dashboardUser.html";
+            }else if(result.type == "admin"){
+                window.location.href="/dashboardAdmin.html";
+            }
         })
         .fail((jqXHR) => {
                 window.alert(jqXHR.responseJSON.message);
         });
 }
-
-    
