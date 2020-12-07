@@ -1,7 +1,11 @@
+const userId = sessionStorage.getItem("LoggedUserID");
+
 function refreshBusStopsTable() {
+    $("#tableAlert").hide();
+
     // Load the busStops and show them in the table
     $.ajax({
-        url: "/api/v1/busStops?" + $.param({userId: "abc"})
+        url: "/api/v1/busStops?" + $.param({userId})
     })
         .done((result) => {
             var table = $("#busStopsTable tbody");
@@ -12,7 +16,7 @@ function refreshBusStopsTable() {
         })
         .fail((jqXHR, textStatus, errorThrown) => {
             $("#tableErrMsg").text(`Risposta del server [${jqXHR.status} - ${errorThrown}]: ${jqXHR.responseText}`);
-            $("#tableAlert").removeAttr('hidden');
+            $("#tableAlert").show();
         });
 }
 
@@ -22,7 +26,7 @@ function addBusStop() {
 
     var newName = $("#busStopName").val();
     $.ajax({
-        url: "/api/v1/busStops?" + $.param({userId: "abc"}),
+        url: "/api/v1/busStops?" + $.param({userId}),
         type: "POST",
         data: JSON.stringify({name: newName}),
         contentType: "application/json",
