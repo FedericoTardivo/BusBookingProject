@@ -130,9 +130,27 @@
                 schema:
                   type: string
                   example: La fermata con ID '68e1a073-8590-4f13-b0cb-f8d0a0e36972' non esiste.
+
+          '409':
+            description: Fermata già registrata
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/FieldError'
+                example:
+                  fieldName: name
+                  fieldMessage: La fermata "Piazza Dante" è già registrata
           
       delete:
         description: Elimina la fermata dell'autobus specificata
+        parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID della fermata da eliminare
         responses:
           '204':
             description: Fermata eliminata con successo.
