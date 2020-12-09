@@ -1,3 +1,5 @@
+var lines = [];
+
 function refreshLinesTable() {
     $("#tableAlert1").hide();
 
@@ -6,6 +8,7 @@ function refreshLinesTable() {
         url: "/api/v1/lines"
     })
         .done((result) => {
+            lines=result;
             var table = $("#linesTable tbody");
             table.empty();
             $.each(result, (index, bs) => {
@@ -20,7 +23,9 @@ function refreshLinesTable() {
 
 function refreshStopsTable(lineId) {
     $("tableAlert2").hide();
-    $.ajax({
-        
-    })
+    var table = $("#stopsTable tbody");
+    table.empty();
+    $.each(lines,(index,bs) => {
+        if(bs._id == lineId) table.append(`${bs.path}`);
+    });
 }
