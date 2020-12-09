@@ -10,7 +10,13 @@
   paths:
     /busStops:
       get:
-        description: Restituisce l'elenco delle fermate del servizio di trasporti specificato
+        description: Restituisce l'elenco delle fermate degli autobus
+        parameters:
+        - in: query
+          name: companyId
+          schema:
+            type: string
+          description: ID della compagnia di trasporti di cui ottenere le fermate
         responses:
           '200':
             description: Richiesta avvenuta con successo
@@ -26,8 +32,6 @@
                             type: string
                       - $ref: '#/components/schemas/BusStop'
 
-          '401':
-            $ref: '#/components/responses/401Unauthorized'
       post:
         description: Crea una nuova fermata dell'autobus
         requestBody:
@@ -76,7 +80,89 @@
                 example:
                   fieldName: name
                   fieldMessage: La fermata "Piazza Dante" è già registrata
+    
+    /busStops/{id}:
+      get:
+        description: Restituisce la fermata dell'autobus con l'ID specificato
+        parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID della fermata dell'autobus che si vuole ottenere
+        responses:
+          '200':
+            description: Richiesta avvenuta con successo
+            content:
+              application/json:
+                schema:
+                  type: object
+                  allOf:
+                    - type: object
+                      properties:
+                        self:
+                          type: string
+                    - $ref: '#/components/schemas/BusStop'
+          '400':
+            description: L'ID della fermata non esiste.
+            content:
+              text/plain:
+                schema:
+                  type: string
+                  example: La fermata con ID "abcd" non esiste.
+
+      post:
+        description: Crea una nuova fermata dell'autobus
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - name
+                properties:
+                  name:
+                    type: string
+                    example: "Piazza Dante"
+        responses:
+          '201':
+            description: Fermata creata con successo
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - type: object
+                      properties:
+                        self:
+                          type: string
+                          example: /api/v1/busStops/123456
+                    - $ref: '#/components/schemas/BusStop'
+            headers:
+              Location:
+                schema:
+                  type: string
+                description: Link per ottenere la fermata appena creata
           
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+
+          '401':
+            $ref: '#/components/responses/401Unauthorized'
+            
+          '409':
+            description: Fermata già registrata
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/FieldError'
+                example:
+                  fieldName: name
+                  fieldMessage: La fermata "Piazza Dante" è già registrata
+      
+
     /lines:
       get:
         description: Restituisce la lista delle linee del servizio di trasporti specificato
@@ -401,7 +487,7 @@
       BusStop:
         type: object
         properties:
-          _id:
+          id:
             type: string
           name:
             type: string
