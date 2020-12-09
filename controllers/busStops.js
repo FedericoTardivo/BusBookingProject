@@ -4,25 +4,46 @@ const db = require('../lib/db.js');
 const BadRequestResponse = require('../models/BadRequestResponse.js');
 const FieldError = require('../models/FieldError.js');
 
-// Gets an array containing all the bus stops of the logged admin
+// Gets an array containing all the bus stops
 module.exports.getBusStops = async (req, res) => {
-    // Check if the user is authenticated
-    if(!req.loggedUserId) {
-        return res.status(401).send("Utente non autenticato.");
+    // If filtering by company ID is requested...
+    let stops;
+    if (req.query.companyId) {
+        // ...get all the bus stops of that company
+        stops = await db.busStops.findBy({companyId: req.query.companyId});
+    }else{
+        // Get all the bus stops from the DB
+        stops = await db.busStops.get();
     }
-
-    // Get all the bus stops from the DB
-    const stops = await db.busStops.findBy({adminId: req.loggedUserId});
-
+    
     // Return the response mapping the objects
     // so they have the right properties
     res.status(200).json(stops.map(bs => {
         return {
             self: `/api/v1/busStops/${bs._id}`,
-            _id: bs._id,
+            id: bs._id,
             name: bs.name
         };
     }));
+};
+
+// Gets the bus stop with the specified ID
+module.exports.getBusStop = async (req, res) => {
+    // Get the bus stop by ID
+    const stops = await db.busStops.findBy({_id: req.params.id});
+    
+    // If the ID is not existing...
+    if (stops.length == 0) {
+        // ...return a 404 error
+        return res.status(404).send(`La fermata con ID "${req.params.id}" non esiste.`);
+    }
+
+    // Map the object for the response
+    res.status(200).json({
+            self: `/api/v1/busStops/${stops[0]._id}`,
+            id: stops[0]._id,
+            name: stops[0].name
+    });
 };
 
 // Registers a new bus stop in the DB

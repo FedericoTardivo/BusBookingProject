@@ -10,7 +10,13 @@
   paths:
     /busStops:
       get:
-        description: Restituisce l'elenco delle fermate del servizio di trasporti specificato
+        description: Restituisce l'elenco delle fermate degli autobus
+        parameters:
+        - in: query
+          name: companyId
+          schema:
+            type: string
+          description: ID della compagnia di trasporti di cui ottenere le fermate
         responses:
           '200':
             description: Richiesta avvenuta con successo
@@ -26,8 +32,6 @@
                             type: string
                       - $ref: '#/components/schemas/BusStop'
 
-          '401':
-            $ref: '#/components/responses/401Unauthorized'
       post:
         description: Crea una nuova fermata dell'autobus
         requestBody:
@@ -76,8 +80,39 @@
                 example:
                   fieldName: name
                   fieldMessage: La fermata "Piazza Dante" è già registrata
-      
+    
     /busStops/{id}:
+      get:
+        description: Restituisce la fermata dell'autobus con l'ID specificato
+        parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID della fermata dell'autobus che si vuole ottenere
+        responses:
+          '200':
+            description: Richiesta avvenuta con successo
+            content:
+              application/json:
+                schema:
+                  type: object
+                  allOf:
+                    - type: object
+                      properties:
+                        self:
+                          type: string
+                    - $ref: '#/components/schemas/BusStop'
+          '400':
+            description: L'ID della fermata non esiste.
+            content:
+              text/plain:
+                schema:
+                  type: string
+                  example: La fermata con ID "abcd" non esiste.
+      
       put:
         description: Modifica una fermata dell'autobus già esistente
         parameters:
@@ -188,6 +223,7 @@
                   type: array
                   items:
                     type: object
+      
       post:
         description: Crea una nuova linea
         requestBody:
@@ -263,7 +299,7 @@
 
     /authentication:
       post:
-        description: esegue il login differenziando User "normali" ed Admin
+        description: Esegue il login differenziando User "normali" ed Admin
         requestBody:
           required: true
           content:
