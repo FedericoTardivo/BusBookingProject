@@ -10,7 +10,8 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 
-    <script src="busStops.js"></script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
 </head>
 
 <body style="padding-bottom: 70px;">
@@ -37,6 +38,38 @@
         </div>
     </nav>
 
+    <!-- Editor modal -->
+    <div class="modal fade" tabindex="-1" id="editModal" aria-labelledby="editModalTitle" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h5 class="modal-title" id="editModalTitle">Modifica fermata</h5>
+                        <small class="text-muted" id="editIdLabel"></small>
+                    </div>
+                    
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="busStopName">Nome attuale della fermata</label>
+                        <input type="text" class="form-control" id="oldBusStopName" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="busStopName">Nuovo nome della fermata</label>
+                        <input type="text" class="form-control" id="newBusStopName">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+                    <button type="button" class="btn btn-warning" id="editModalButton">Modifica</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Page Content -->
     <main role="main">
         <div class="container">
@@ -55,20 +88,21 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Nome fermata</th>
+                                <th>Azioni</th>
                             </tr>
                         </thead>
                         <tbody>
-        
+                            
                         </tbody>
                     </table>
                 </div>
             </div>
             
             <div class="card">
-                <div class="card-header">
+                <div class="card-header" id="editingHeader">
                     Aggiungi una nuova fermata
                 </div>
-                <div class="card-body">
+                <div class="card-body" id="editingCard">
                     <div class="alert alert-danger" id="formAlert" role="alert" style="display: none;">
                         <p><strong>Errore!</strong> Si è verificato un errore durante l'aggiunta della fermata.</p>
                         <hr>
@@ -100,12 +134,7 @@
     <!-- Bootstrap core JavaScript -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
-
-    <script>
-        // When the document is ready
-        $(document).ready(() => {
-            refreshBusStopsTable();
-        });
-    </script>
+    
+    <script src="busStops.js"></script>
 </body>
 </html>
