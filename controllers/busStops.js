@@ -92,7 +92,7 @@ module.exports.insertBusStop = async (req, res) => {
     
     // Send the response with the correct "Location" header
     res.location(`/api/v1/busStops/${busStop._id}`).status(201).json({
-        self = `/api/v1/busStops/${busStop._id}`,
+        self: `/api/v1/busStops/${busStop._id}`,
         id: busStop._id,
         name: busStop.name
     });
