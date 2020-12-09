@@ -1,10 +1,11 @@
 class Line {
     constructor(){
         {
-            this.adminId = '',
             this._id = '',
+            this.companyId = '',
             this.name = '',
-            this.path =[]        }
+            this.path =[] 
+        }
     }
 }
 

@@ -59,8 +59,8 @@ module.exports.insertBusStop = async (req, res) => {
 
     // Create a new object
     const busStop = new BusStop();
-    // Set the owner of the line as the logged user
-    busStop.adminId = req.loggedUserId;
+    // Set the owner of the line as the company of the logged user
+    busStop.companyId = (await db.admins.findBy({_id: req.loggedUserId}))[0].companyId;
     // Set the name of the stop
     busStop.name = req.body.name;
 
@@ -81,8 +81,8 @@ module.exports.insertBusStop = async (req, res) => {
     
     // All the params are valid
 
-    // If the name of the bus stop already exists...
-    if((await db.busStops.findBy({name: busStop.name})).length > 0) {
+    // If the name of the bus stop already exists for the same company...
+    if((await db.busStops.findBy({name: busStop.name, companyId: busStop.companyId})).length > 0) {
         // ...send a 409Conflit error response
         return res.status(409).send("Fermata già registrata");
     }
@@ -90,11 +90,12 @@ module.exports.insertBusStop = async (req, res) => {
     // All is OK, add the bus stop
     busStop._id = await db.busStops.insert(busStop);
     
-    // Add the self param
-    busStop.self = `/api/v1/busStops/${busStop._id}`;
-
     // Send the response with the correct "Location" header
-    res.location(`/api/v1/busStops/${busStop._id}`).status(201).json(busStop);
+    res.location(`/api/v1/busStops/${busStop._id}`).status(201).json({
+        self = `/api/v1/busStops/${busStop._id}`,
+        id: busStop._id,
+        name: busStop.name
+    });
 }
 
 // Updates an existsing bus stop in the DB
@@ -113,8 +114,9 @@ module.exports.updateBusStop = async (req, res) => {
         return res.status(404).send(`La fermata con ID '${req.params.id}' non esiste.`);
     }
 
-    // Check if the user is the owner of the bus stop (a user cannot change a bus stop of another user)
-    if(busStop.adminId != req.loggedUserId) {
+    // Check if the user is in the company that owns the bus stop (a user cannot change a bus stop of another user)
+    const userCompanyId = (await db.admins.findBy({_id: req.loggedUserId}))[0].companyId;
+    if(busStop.companyId != userCompanyId) {
         return res.status(403).send("Accesso non autorizzato.");
     }
 
@@ -142,8 +144,8 @@ module.exports.updateBusStop = async (req, res) => {
     // Set the new name
     busStop.name = req.body.name;
 
-    // If the new name of the bus stop already exists...
-    if((await db.busStops.findBy({name: busStop.name, adminId: busStop.adminId})).length > 0) {
+    // If the new name of the bus stop already exists in the same company...
+    if((await db.busStops.findBy({name: busStop.name, companyId: busStop.companyId})).length > 0) {
         // ...send a 409Conflict error response
         return res.status(409).send("Nome della fermata già registrato");
     }
@@ -175,8 +177,9 @@ module.exports.deleteBusStop = async (req, res) => {
         return res.status(404).send(`La fermata con ID '${req.params.id}' non esiste.`);
     }
 
-    // Check if the user is the owner of the bus stop (a user cannot delete a bus stop of another user)
-    if(busStop.adminId != req.loggedUserId) {
+    // Check if the user is in the company that owns the bus stop (a user cannot delete a bus stop of another user)
+    const userCompanyId = (await db.admins.findBy({_id: req.loggedUserId}))[0].companyId;
+    if(busStop.companyId != userCompanyId) {
         return res.status(403).send("Accesso non autorizzato.");
     }
     
