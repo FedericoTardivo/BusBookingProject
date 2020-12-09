@@ -118,8 +118,11 @@ module.exports.updateBusStop = async (req, res) => {
     
     // All the params are valid
 
+    // Set the new name
+    busStop.name = req.body.name;
+
     // If the new name of the bus stop already exists...
-    if((await db.busStops.findBy({name: req.body.name})).length > 0) {
+    if((await db.busStops.findBy({name: busStop.name, adminId: busStop.adminId})).length > 0) {
         // ...send a 409Conflict error response
         return res.status(409).send("Nome della fermata già registrato");
     }
