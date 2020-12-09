@@ -5,7 +5,12 @@ const BadRequestResponse = require('../models/BadRequestResponse.js');
 const FieldErr = require('../models/FieldError.js');
 
 module.exports.getLines = async (req,res) => {
-    let lines = await db.lines.get();
+    var lines;
+    if(req.query.companyId){
+    lines = await db.lines.findBy({companyId : req.query.companyId});
+    }else{
+    lines = await db.lines.get();
+    }
     return res.status(200).json(lines);
 };
 
