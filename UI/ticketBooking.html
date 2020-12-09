@@ -41,7 +41,7 @@
         <div class="container">
             <div class="card my-2">
                 <div class="card-header">
-                    Scegli la linea
+                    Scegli la linea, verranno mostrate le sue fermate.
                 </div>
                 <div class="card-body">
                     <div class="alert alert-danger" id="tableAlert1" role="alert" style="display: none;">
@@ -66,7 +66,7 @@
         <div class="container">
             <div class="card my-2">
                 <div class="card-header">
-                    Fermate di quella linea
+                    Scegli la fermata, verranno mostrati gli orari.
                 </div>
                 <div class="card-body">
                     <div class="alert alert-danger" id="tableAlert2" role="alert" style="display: none;">
@@ -78,6 +78,31 @@
                         <thead>
                             <tr>
                                 <th>Nome fermata</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="card my-2">
+                <div class="card-header">
+                    Scegli l'orario.
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger" id="tableAlert3" role="alert" style="display: none;">
+                        <p><strong>Errore!</strong> Si è verificato un errore nel caricamento delle fermate.</p>
+                        <hr>
+                        <p class="mb-0" id="tableErrMsg3"></p>
+                    </div>
+                    <table class="table" id="timesTable">
+                        <thead>
+                            <tr>
+                                <th>Orario</th>
                             </tr>
                         </thead>
                         <tbody>
