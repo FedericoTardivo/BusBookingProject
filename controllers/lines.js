@@ -4,6 +4,11 @@ const db = require ('../lib/db.js');
 const BadRequestResponse = require('../models/BadRequestResponse.js');
 const FieldErr = require('../models/FieldError.js');
 
+module.exports.getLines = async (req,res) => {
+    let lines = await db.lines.get();
+    return res.status(200).json(lines);
+};
+
 // this inserts the passed Line in the db
 module.exports.insertLine = async (req, res) => {
     const line = new Line();
