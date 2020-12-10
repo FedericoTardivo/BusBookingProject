@@ -4,50 +4,88 @@ const request = require('supertest');
 const db = require('../lib/db.js');
 
 const BusStop = require('../models/BusStop');
+const Admin = require('../models/Admin');
 
 // Some test data to mock DB functions
 const test1 = new BusStop();
-test1.adminId = "adminId";
+test1._id = "abc";
+test1.companyId = "fakeCompanyId";
 test1.name = "Fermata1";
 
 const test2 = new BusStop();
-test2.adminId = "adminId";
+test1._id = "def";
+test2.companyId = "fakeCompanyId";
 test2.name = "Fermata2";
 
 const test3 = new BusStop();
-test3.adminId = "altroAdmin";
+test1._id = "ghi";
+test3.companyId = "fakeOtherCompanyId";
 test3.name = "Fermata3";
 
-const mockDB = [
+const mockBusStopsCollection = [
     test1,
     test2,
     test3
 ];
 
+const mockAdmin = new Admin();
+mockAdmin._id = "abc";
+mockAdmin.companyId = "fakeCompanyId";
+mockAdmin.email = "admin@example.com";
+mockAdmin.password = "password";
+
+const mockAdminsCollection = [
+    mockAdmin
+];
+
 describe('API Bus stops - Update bus stop', () => {
     // Moking DB methods
-    let bsSpyFindBy, bsSpyUpdate;
+    let bsSpyFindBy, bsSpyUpdate, adminSpyFindBy;
 
     beforeAll(() => {
+        // Mock db.busStops.findBy method
         bsSpyFindBy = jest.spyOn(db.busStops, "findBy").mockImplementation(query => {
-            let filtered = mockDB;
+            // Get all the bus stops
+            let filtered = mockBusStopsCollection;
 
+            // Filter based on the query
             if (query._id) filtered = filtered.filter(x => x._id == query._id);
             if (query.name) filtered = filtered.filter(x => x.name == query.name);
-            if (query.adminId) filtered = filtered.filter(x => x.adminId == query.adminId);
+            if (query.companyId) filtered = filtered.filter(x => x.companyId == query.companyId);
 
+            // Return the filtered items
             return filtered;
         });
 
+        // Mock db.busStops.update method
         bsSpyUpdate = jest.spyOn(db.busStops, "update").mockImplementation(obj => {
-            mockDB.find(x => x._id == obj._id) = obj;
+            // Find the element to update
+            let oldObj = mockBusStopsCollection.find(x => x._id == obj._id);
+            // Update the object with the new one
+            oldObj = obj;
+            // Return the updated object
             return obj;
         })
+
+        // Mock db.admins.findBy method
+        adminSpyFindBy = jest.spyOn(db.admins, "findBy").mockImplementation(query => {
+            // Get all the admins
+            let filtered = mockAdminsCollection;
+
+            // Filter based on the query
+            if (query._id) filtered = filtered.filter(x => x._id == query._id);
+            if (query.companyId) filtered = filtered.filter(x => x.companyId == query.companyId);
+            if (query.email) filtered = filtered.filter(x => x.email == query.email);
+
+            // Return the filtered items
+            return filtered;
+        });
     });
 
     afterAll(async () => {
         bsSpyFindBy.mockRestore();
         bsSpyUpdate.mockRestore();
+        adminSpyFindBy.mockRestore();
     });
 
     it("Request from unauthenticated user should return 401 error", (done) => {
@@ -124,33 +162,52 @@ describe('API Bus stops - Update bus stop', () => {
 
 describe('API Bus stops - Delete bus stop', () => {
     // Moking DB methods
-    let bsSpyFindBy, bsSpyDelete;
+    let bsSpyFindBy, bsSpyUpdate, adminSpyFindBy;
 
     beforeAll(() => {
+        // Mock db.busStops.findBy method
         bsSpyFindBy = jest.spyOn(db.busStops, "findBy").mockImplementation(query => {
-            let filtered = mockDB;
+            // Get all the bus stops
+            let filtered = mockBusStopsCollection;
 
+            // Filter based on the query
             if (query._id) filtered = filtered.filter(x => x._id == query._id);
             if (query.name) filtered = filtered.filter(x => x.name == query.name);
-            if (query.adminId) filtered = filtered.filter(x => x.adminId == query.adminId);
+            if (query.companyId) filtered = filtered.filter(x => x.companyId == query.companyId);
 
+            // Return the filtered items
             return filtered;
         });
 
-        bsSpyDelete = jest.spyOn(db.busStops, "delete").mockImplementation(obj => {
-            const index = mockDB.findIndex((el) => el._id == obj._id);
-            if (index > -1) {
-                mockDB.splice(index, 1);
-                return true;
-            } else {
-                return false;
-            }
+        // Mock db.busStops.update method
+        bsSpyUpdate = jest.spyOn(db.busStops, "update").mockImplementation(obj => {
+            // Find the element to update
+            let oldObj = mockBusStopsCollection.find(x => x._id == obj._id);
+            // Update the object with the new one
+            oldObj = obj;
+            // Return the updated object
+            return obj;
         })
+
+        // Mock db.admins.findBy method
+        adminSpyFindBy = jest.spyOn(db.admins, "findBy").mockImplementation(query => {
+            // Get all the admins
+            let filtered = mockAdminsCollection;
+
+            // Filter based on the query
+            if (query._id) filtered = filtered.filter(x => x._id == query._id);
+            if (query.companyId) filtered = filtered.filter(x => x.companyId == query.companyId);
+            if (query.email) filtered = filtered.filter(x => x.email == query.email);
+
+            // Return the filtered items
+            return filtered;
+        });
     });
 
     afterAll(async () => {
         bsSpyFindBy.mockRestore();
-        bsSpyDelete.mockRestore();
+        bsSpyUpdate.mockRestore();
+        adminSpyFindBy.mockRestore();
     });
 
     it("Request from unauthenticated user should return 401 error", (done) => {
