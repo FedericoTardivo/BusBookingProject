@@ -1,17 +1,7 @@
 var lines = [];
 var path =[];
 var busStops=[];
-
-var ticket ={
-    lineId : '',
-    lineName : '',
-    startBusStopId : '',
-    endBusStopId : '',
-    startBusStopName : '',
-    endBusStopName : '',
-    startTime : '',
-    arrivalTime : ''
-}
+var ticket ={};
 
 function refreshLinesTable() {
     $("#tableAlert1").hide();
@@ -35,6 +25,7 @@ function refreshLinesTable() {
 }
 
 function refreshStopsTable(lineId,lineName) {
+    ticket={};
     ticket.lineId=lineId;
     ticket.lineName=lineName;
     $.ajax({
@@ -50,6 +41,7 @@ function refreshStartStopTable(lineId){
     var table = $("#startStopTable tbody");
         table.empty();
         path=(lines.find(x => x._id==lineId)).path;
+        console.log(path);
         $.each(path, (index,elem) => {
             let name=busStops.find(busStop => busStop.id==elem.busStopId).name;
             table.append(`<tr><td onclick='refreshStartTimeTable("${elem.busStopId}","${name}");'>${name}</td></tr>`);
@@ -67,6 +59,7 @@ function refreshEndStopTable(lineId){
 }
 
 function refreshStartTimeTable(startBusStopId,startBusStopName){
+    ticket.startTime='';
     var table = $("#startTimeTable tbody");
     ticket.startBusStopId=startBusStopId;
     ticket.startBusStopName=startBusStopName;
@@ -78,6 +71,7 @@ function refreshStartTimeTable(startBusStopId,startBusStopName){
 }
 
 function refreshArrivalTimeTable(endBusStopId,endBusStopName){
+    ticket.arrivalTime='';
     var table = $("#arrivalTimeTable tbody");
     ticket.endBusStopId=endBusStopId;
     ticket.endBusStopName=endBusStopName;
