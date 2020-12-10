@@ -1,5 +1,18 @@
 var lines = [];
 var path =[];
+var busStops=[];
+
+var ticket ={
+    lineId : '',
+    lineName : '',
+    startBusStopId : '',
+    endBusStopId : '',
+    startBusStopName : '',
+    endBusStopName : '',
+    startTime : '',
+    arrivalTime : ''
+}
+
 function refreshLinesTable() {
     $("#tableAlert1").hide();
 
@@ -11,8 +24,8 @@ function refreshLinesTable() {
             lines=result;
             var table = $("#linesTable tbody");
             table.empty();
-            $.each(result, (index, bs) => {
-                table.append(`<tr><td onclick='refreshStopsTable("${bs._id}");'>${bs.name}</td></tr>`)
+            $.each(result, (index, line) => {
+                table.append(`<tr><td onclick='refreshStopsTable("${line._id}","${line.name}");'>${line.name}</td></tr>`)
             });
         })
         .fail((jqXHR, textStatus, errorThrown) => {
@@ -21,34 +34,65 @@ function refreshLinesTable() {
         });
 }
 
-function refreshStopsTable(lineId) {
-    $("tableAlert2").hide();
-    var busStops=[];
-
+function refreshStopsTable(lineId,lineName) {
+    ticket.lineId=lineId;
+    ticket.lineName=lineName;
     $.ajax({
         url: "/api/v1/busStops"
     }).done(res => {
         busStops=res;
-        var table = $("#stopsTable tbody");
-        table.empty();
-        $.each(lines,(index,bs) => {
-            if(bs._id == lineId) path=bs.path;
-        });
-        //console.log(path);
-        $.each(path, (index,elem) => {
-            let name=busStops.find(busStop => busStop.id==elem.busStopId).name;
-            //console.log(elem);
-            table.append(`<tr><td onclick='refreshTimesTable("${elem.busStopId}");'>${name}</td></tr>`);
-            //console.log(elem.busStopId);
-        });
+        refreshStartStopTable(lineId);
+        refreshEndStopTable(lineId);
     })
 }
 
-function refreshTimesTable(busStopId){
-    var table = $("#timesTable tbody");
+function refreshStartStopTable(lineId){
+    var table = $("#startStopTable tbody");
+        table.empty();
+        path=(lines.find(x => x._id==lineId)).path;
+        $.each(path, (index,elem) => {
+            let name=busStops.find(busStop => busStop.id==elem.busStopId).name;
+            table.append(`<tr><td onclick='refreshStartTimeTable("${elem.busStopId}","${name}");'>${name}</td></tr>`);
+        });
+}
+
+function refreshEndStopTable(lineId){
+    var table = $("#endStopTable tbody");
+        table.empty();
+        path=(lines.find(x => x._id==lineId)).path;
+        $.each(path, (index,elem) => {
+            let name=busStops.find(busStop => busStop.id==elem.busStopId).name;
+            table.append(`<tr><td onclick='refreshArrivalTimeTable("${elem.busStopId}","${name}");'>${name}</td></tr>`);
+        });
+}
+
+function refreshStartTimeTable(startBusStopId,startBusStopName){
+    var table = $("#startTimeTable tbody");
+    ticket.startBusStopId=startBusStopId;
+    ticket.startBusStopName=startBusStopName;
     table.empty();
-    var thisPath = path.find(x => x.busStopId==busStopId);
+    var thisPath = path.find(x => x.busStopId==startBusStopId);
     $.each(thisPath.times, (index,time)=>{
-        table.append(`<tr><td>${time.time}</td></tr>`);
+        table.append(`<tr><td onclick='setTicketTimes("start","${time.time}")';>${time.time}</td></tr>`);
     });
+}
+
+function refreshArrivalTimeTable(endBusStopId,endBusStopName){
+    var table = $("#arrivalTimeTable tbody");
+    ticket.endBusStopId=endBusStopId;
+    ticket.endBusStopName=endBusStopName;
+    table.empty();
+    var thisPath = path.find(x => x.busStopId==endBusStopId);
+    $.each(thisPath.times, (index,time)=>{
+        table.append(`<tr><td onclick='setTicketTimes("arrival","${time.time}")';>${time.time}</td></tr>`);
+    });
+}
+
+function setTicketTimes(which,time){
+    //console.log(which);
+    if(which=="start"){
+        ticket.startTime=time;
+    }else if(which=="arrival"){
+        ticket.arrivalTime=time;
+    }
 }

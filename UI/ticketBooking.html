@@ -52,7 +52,7 @@
                     <table class="table" id="linesTable">
                         <thead>
                             <tr>
-                                <th>Nome linea</th>
+                                <th>Linea</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -66,18 +66,13 @@
         <div class="container">
             <div class="card my-2">
                 <div class="card-header">
-                    Scegli la fermata, verranno mostrati gli orari.
+                    Scegli la fermata di partenza, verranno mostrati gli orari.
                 </div>
                 <div class="card-body">
-                    <div class="alert alert-danger" id="tableAlert2" role="alert" style="display: none;">
-                        <p><strong>Errore!</strong> Si è verificato un errore nel caricamento delle fermate.</p>
-                        <hr>
-                        <p class="mb-0" id="tableErrMsg2"></p>
-                    </div>
-                    <table class="table" id="stopsTable">
+                    <table class="table" id="startStopTable">
                         <thead>
                             <tr>
-                                <th>Nome fermata</th>
+                                <th>Fermata di partenza</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -91,18 +86,53 @@
         <div class="container">
             <div class="card my-2">
                 <div class="card-header">
-                    Scegli l'orario.
+                    Scegli l'orario di partenza.
                 </div>
                 <div class="card-body">
-                    <div class="alert alert-danger" id="tableAlert3" role="alert" style="display: none;">
-                        <p><strong>Errore!</strong> Si è verificato un errore nel caricamento delle fermate.</p>
-                        <hr>
-                        <p class="mb-0" id="tableErrMsg3"></p>
-                    </div>
-                    <table class="table" id="timesTable">
+                    <table class="table" id="startTimeTable">
                         <thead>
                             <tr>
-                                <th>Orario</th>
+                                <th>Orario di partenza</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="card my-2">
+                <div class="card-header">
+                    Scegli la fermata di arrivo, verranno mostrati gli orari.
+                </div>
+                <div class="card-body">
+                    <table class="table" id="endStopTable">
+                        <thead>
+                            <tr>
+                                <th>Fermata di arrivo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="card my-2">
+                <div class="card-header">
+                    Scegli l'orario di arrivo.
+                </div>
+                <div class="card-body">
+                    <table class="table" id="arrivalTimeTable">
+                        <thead>
+                            <tr>
+                                <th>Orario di arrivo</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -114,7 +144,7 @@
         </div>
     </main>
 
-
+    
     <!-- Footer -->
     <footer class="footer fixed-bottom py-3">
         <div class="container text-center">
