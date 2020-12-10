@@ -28,14 +28,21 @@ const mockBusStopsCollection = [
     test3
 ];
 
-const mockAdmin = new Admin();
-mockAdmin._id = "abc";
-mockAdmin.companyId = "fakeCompanyId";
-mockAdmin.email = "admin@example.com";
-mockAdmin.password = "password";
+const mockAdmin1 = new Admin();
+mockAdmin1._id = "abc";
+mockAdmin1.companyId = "fakeCompanyId";
+mockAdmin1.email = "admin@example.com";
+mockAdmin1.password = "password";
+
+const mockAdmin2 = new Admin();
+mockAdmin2._id = "def";
+mockAdmin2.companyId = "otherCompanyId";
+mockAdmin2.email = "example@domain.com";
+mockAdmin2.password = "password";
 
 const mockAdminsCollection = [
-    mockAdmin
+    mockAdmin1,
+    mockAdmin2
 ];
 
 describe('API Bus stops - Update bus stop', () => {
@@ -102,7 +109,7 @@ describe('API Bus stops - Update bus stop', () => {
         const body = {name: "Nome nuovo"};
         request(app)
             .put(`/api/v1/busStops/${test1._id}`)
-            .query({userId: "notTheOwner"})
+            .query({userId: mockAdmin2._id})
             .send(body)
 
             .expect(403)
@@ -221,7 +228,7 @@ describe('API Bus stops - Delete bus stop', () => {
     it("Request from a user different from the owner of the bus stop should return 403 error", (done) => {
         request(app)
             .delete(`/api/v1/busStops/${test1._id}`)
-            .query({userId: "notTheOwner"})
+            .query({userId: mockAdmin2._id})
 
             .expect(403)
             .end(() => done());
