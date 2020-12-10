@@ -1,9 +1,7 @@
-
 const db = require("../lib/db.js")
 const BadRequestResponse = require('../models/BadRequestResponse.js');
 const FieldError = require('../models/FieldError.js');
 const Ticket = require('../models/Ticket.js');
-
 
 /* insert ticket from body of POST request */
 module.exports.insertTicket=async (req,res)=>{

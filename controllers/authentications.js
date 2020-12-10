@@ -1,4 +1,3 @@
-//only for try heroku
 const UserLogin = require('../models/UserLogin.js');
 const BadRequestResponse = require('../models/BadRequestResponse.js');
 const FieldError = require('../models/FieldError.js');
@@ -12,7 +11,6 @@ module.exports.authenticationUser = async (req, res) => {
 	user.password = req.body.password;
 
     let valid = true;
-    let isAdmin = false;
     let errResp = new BadRequestResponse();
 	
 	//Validate email
@@ -44,7 +42,10 @@ module.exports.authenticationUser = async (req, res) => {
             return res.status(401).json(errResp);
         } else {
             //request is valid and the admin can log, return ID admin
-            return res.status(200).send("admin " + tempAdmin[0].id + "loggato");
+            return res.status(200).json({
+				id: tempAdmin[0]._id,
+				type: "admin"
+			});
         }
     }
 
@@ -61,7 +62,10 @@ module.exports.authenticationUser = async (req, res) => {
 			return res.status(401).json(errResp);
 		} else {
 			//request is valid, return ID user
-			return res.status(200).send("utente " + tempUser[0].id + " loggato");
+			return res.status(200).json({
+				id: tempUser[0]._id,
+				type: "user"
+			});
 		}
 	}
 };

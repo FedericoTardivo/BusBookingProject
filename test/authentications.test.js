@@ -11,7 +11,7 @@ const request = supertest(app);
 describe ('Test API - Authentication', () => {
 
     const MockAdmin = new Admin();
-    MockAdmin.society = "Facciabook";
+    MockAdmin.companyId = "fakeCompanyId";
     MockAdmin.email = "faccia.book@domain.com";
     MockAdmin.password = "MySecretSuperPassword";
     
