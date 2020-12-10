@@ -74,7 +74,7 @@
                             <th>Fermata di Arrivo</th>
                         </tr>
                     </tfoot>
-                    <tbody onload="loadTable()">        <!--tabella caricata-->
+                    <tbody>        <!--tabella caricata-->
 
                     </tbody>
                 </table>
@@ -99,10 +99,13 @@
     <script src="bookingHistoryData/jquery.dataTables.min.js"></script>
     <script src="bookingHistoryData/dataTables.bootstrap4.min.js"></script>
 
-    <!-- Page level custom scripts -->
-    <script src="bookingHistoryData/datatables.js"></script>
 
-
+    <script>
+        // When the document is ready
+        $(document).ready(() => {
+            loadTable();
+        });
+    </script>
     
 </body>
 

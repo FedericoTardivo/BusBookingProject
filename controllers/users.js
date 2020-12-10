@@ -162,7 +162,7 @@ module.exports.getTickets = async (req, res) => {
 	}
     
     // Get all the tickets of the logged user
-    let tickets = await db.tickets.findBy({_id : req.loggedUserId});
+    let tickets = await db.tickets.findBy({userId : req.loggedUserId});
 
     // If the collection is empty, return an empty array
     if(tickets == []) {
