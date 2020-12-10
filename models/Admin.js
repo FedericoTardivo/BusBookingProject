@@ -1,7 +1,7 @@
 class Admin {
     constructor() {
         this._id = '';
-        this.society = '';
+        this.companyId = '';
         this.email = '';
         this.password = '';
     }

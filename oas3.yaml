@@ -112,9 +112,17 @@
                 schema:
                   type: string
                   example: La fermata con ID "abcd" non esiste.
-
-      post:
-        description: Crea una nuova fermata dell'autobus
+      
+      put:
+        description: Modifica una fermata dell'autobus già esistente
+        parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID della fermata da modificare
         requestBody:
           required: true
           content:
@@ -128,8 +136,8 @@
                     type: string
                     example: "Piazza Dante"
         responses:
-          '201':
-            description: Fermata creata con successo
+          '200':
+            description: Fermata modificata con successo
             content:
               application/json:
                 schema:
@@ -140,18 +148,24 @@
                           type: string
                           example: /api/v1/busStops/123456
                     - $ref: '#/components/schemas/BusStop'
-            headers:
-              Location:
-                schema:
-                  type: string
-                description: Link per ottenere la fermata appena creata
           
           '400':
             $ref: '#/components/responses/400BadRequest'
 
           '401':
             $ref: '#/components/responses/401Unauthorized'
-            
+
+          '403':
+            $ref: '#/components/responses/403Forbidden'
+
+          '404':
+            description: L'ID della fermata specificata non esiste.
+            content:
+              text/plain:
+                schema:
+                  type: string
+                  example: La fermata con ID '68e1a073-8590-4f13-b0cb-f8d0a0e36972' non esiste.
+
           '409':
             description: Fermata già registrata
             content:
@@ -161,7 +175,34 @@
                 example:
                   fieldName: name
                   fieldMessage: La fermata "Piazza Dante" è già registrata
-      
+          
+      delete:
+        description: Elimina la fermata dell'autobus specificata
+        parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID della fermata da eliminare
+        responses:
+          '204':
+            description: Fermata eliminata con successo.
+
+          '401':
+            $ref: '#/components/responses/401Unauthorized'
+
+          '403':
+            $ref: '#/components/responses/403Forbidden'
+
+          '404':
+            description: L'ID della fermata specificata non esiste.
+            content:
+              text/plain:
+                schema:
+                  type: string
+                  example: La fermata con ID '68e1a073-8590-4f13-b0cb-f8d0a0e36972' non esiste.
 
     /lines:
       get:
@@ -182,6 +223,7 @@
                   type: array
                   items:
                     type: object
+      
       post:
         description: Crea una nuova linea
         requestBody:
@@ -257,7 +299,7 @@
 
     /authentication:
       post:
-        description: esegue il login differenziando User "normali" ed Admin
+        description: Esegue il login differenziando User "normali" ed Admin
         requestBody:
           required: true
           content:
@@ -283,12 +325,12 @@
           '401':
             $ref: '#/components/responses/401Unauthorized'
 
-    /users/{_id}/tickets:
+    /users/{id}/tickets:
       get:
         description: Ottiene un elenco di tutti i biglietti acquistati dall'utente
         parameters:
         - in: path
-          name: _id
+          name: id
           required: true
           schema:
             type: string

@@ -1,11 +1,10 @@
-class BusStop {
+class Company {
     constructor(){
         {
             this._id = '',
-            this.companyId = '',
             this.name = ''
         }
     }
 }
 
-module.exports = BusStop;
+module.exports = Company;

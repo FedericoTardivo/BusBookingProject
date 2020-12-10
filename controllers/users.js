@@ -82,7 +82,7 @@ module.exports.getTickets = async (req, res) => {
     }
 
     // Check if the user is authorized (a user cannot see the tickets of another user)
-    if(req.params._id != req.loggedUserId) {
+    if(req.params.id != req.loggedUserId) {
         return res.status(403).send("Accesso non autorizzato.");
     }
 
