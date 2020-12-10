@@ -77,20 +77,23 @@
                     <div class="alert alert-success" id="formAlertSuccess" role="alert" style="display: none;">
                         linea aggiunta con successo!
                     </div>
-
                     <form>
-                        <div class="form-group">
-                            <label for="name">Nome Linea</label>
-                            <input type="text" class="form-control" id="name" required>
-                            <label for="idBusStop">ID Fermata</label>
-                            <input type="text" class="form-control" id="idBusStop_1" required>
-                            <label for="number">Ordine fermata</label>
-                            <input type="text" class="form-control" id="number" required>
-                            <label for="time">Orario di Arrivo</label>
-                            <input type="text" class="form-control" id="time" required>
-                            <label for="accessibility">Accessibilità</label>
-                            <input type="text" class="form-control" id="accessibility" required>
+                        <label for="name">Nome Linea</label>
+                        <input type="text" class="form-control" id="name" required>
 
+                        <div class="form-group" id="StopsContainer">
+                            <div>
+                                <select>
+                                <option>
+                                    fermata_1
+                                </option>
+                                <option>
+                                    fermata_2
+                                </option>
+                                </select>
+                                <input type="text">
+                            </div>
+                
                         </div>
                         <button class="btn btn-primary" type="button" onclick="addBusStoptoLine()">Aggiungi fermata alla linea</button>
                         <button class="btn btn-primary" type="button" onclick="addLine()">Aggiungi linea</button>

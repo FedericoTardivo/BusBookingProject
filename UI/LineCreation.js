@@ -17,13 +17,11 @@ function refreshLinesTable() {
 }
 
 function addBusStoptoLine(){
-    $("#formAlert").hide();
-    $("#formAlertSuccess").hide();
+  
     var newinput = document.createElement("input");
     newinput.type = "text";
-    newinput.id = "idBusStop";
-    
-    document.body.insertBefore("#number");
+    newinput.id = "idBusStop_2";
+    document.body.insertBefore("idBusStop_2","number");
 
 }
 
