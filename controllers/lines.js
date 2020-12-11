@@ -16,6 +16,11 @@ module.exports.getLines = async (req,res) => {
 
 // this inserts the passed Line in the db
 module.exports.insertLine = async (req, res) => {
+    // Check if the user is authenticated
+    if(!req.loggedUserId) {
+        return res.status(401).send("Utente non autenticato.");
+    }
+
     const line = new Line();
     // Set the owner of the line as the company of the logged user
     const userCompanyId = (await db.admins.findBy({_id: req.loggedUserId}))[0].companyId;
