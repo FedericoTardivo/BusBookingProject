@@ -25,6 +25,11 @@ function refreshLinesTable() {
 }
 
 function refreshStopsTable(lineId,lineName) {
+    if(document.getElementById("datepicker").value==""){
+        alert("Prima seleziona una data dal calendario");
+        return;
+    }
+    
     ticket={};
     ticket.lineId=lineId;
     ticket.lineName=lineName;
@@ -41,7 +46,7 @@ function refreshStartStopTable(lineId){
     var table = $("#startStopTable tbody");
         table.empty();
         path=(lines.find(x => x._id==lineId)).path;
-        console.log(path);
+        //console.log(path);
         $.each(path, (index,elem) => {
             let name=busStops.find(busStop => busStop.id==elem.busStopId).name;
             table.append(`<tr><td onclick='refreshStartTimeTable("${elem.busStopId}","${name}");'>${name}</td></tr>`);
@@ -84,9 +89,24 @@ function refreshArrivalTimeTable(endBusStopId,endBusStopName){
 
 function setTicketTimes(which,time){
     //console.log(which);
+    let date=new Date();
+    //date.se
     if(which=="start"){
-        ticket.startTime=time;
+        ticket.startTime=document.getElementById("datepicker").value + "T" + time +":00.000+01:00";
     }else if(which=="arrival"){
-        ticket.arrivalTime=time;
+        ticket.arrivalTime=document.getElementById("datepicker").value + "T" + time +":00.000+01:00";
+    }
+}
+
+function buyTicket(){
+    document.getElementById("buyButton").disabled = true
+    var start=new Date(ticket.startTime);
+    var arrival=new Date(ticket.arrivalTime);
+    var text = "Confermi di voler acquistare questo biglietto?\n" + `Linea: ${ticket.lineName}\n` + `Partenza: ${ticket.startBusStopName} , il ${start.getDate()}-${start.getMonth()+1}-${start.getFullYear()} alle ${start.getHours()}:${start.getMinutes()}\n` + `Arrivo: ${ticket.endBusStopName} , il ${arrival.getDate()}-${arrival.getMonth()+1}-${arrival.getFullYear()} alle ${arrival.getHours()}:${arrival.getMinutes()}`;
+    var r = confirm(text);
+    if (r == true) {
+    console.log("biglietto acquistato");
+    } else {
+    console.log("acquisto annullato");
     }
 }
