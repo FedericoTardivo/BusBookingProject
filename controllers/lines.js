@@ -26,6 +26,7 @@ module.exports.insertLine = async (req, res) => {
     const userCompanyId = (await db.admins.findBy({_id: req.loggedUserId}))[0].companyId;
     line.companyId = userCompanyId;
     line.name = req.body.name;
+    line.capacity = req.body.capacity;
     line.path = req.body.path;
 
     let validField = true;
@@ -80,6 +81,12 @@ module.exports.insertLine = async (req, res) => {
         });
     }
 
+    //capacity validation
+    if(line.capacity == undefined || line.capacity < 1){
+        validField = false;
+        ResponseError.fieldsErrors.push(new FieldErr('capacity', 'the field "capacity" must be a positive number'));
+    }
+
     //if one of the fields are not valid, this sends a BadRequest error
     if (!validField){
         ResponseError.message = 'Unvalid Request.';
@@ -93,7 +100,7 @@ module.exports.insertLine = async (req, res) => {
             fieldMessage: `La linea \"${line.name}\" è già esistente`
         });
     }
-
+    
     //if, instead, the request is valid
     line._id = await db.lines.insert(line);
     

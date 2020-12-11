@@ -222,7 +222,7 @@
                 schema:
                   type: array
                   items:
-                    type: object
+                    $ref:  "#/components/schemas/LineSelf"
       
       post:
         description: Crea una nuova linea
@@ -514,10 +514,13 @@
         type: object
         required:
           - name
+          - capacity
           - path
         properties:
           name:
             type: string
+          capacity: 
+            type: integer
           path:
             type: array
             items:

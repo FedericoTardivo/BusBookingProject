@@ -41,14 +41,14 @@ admin2.email = "example@domain.com";
 admin2.password = "password";
 
 const mockAdminsCollection = [
-    admin1,
-    admin2
+    admin1
 ];
 
 const line1 = {
   _id: "abc",
   companyId: "fakeCompanyId",
   name: "Linea 5",
+  capacity: 10,
   path: [
     {
       busStopId: bs1._id,
@@ -81,8 +81,46 @@ const line1 = {
   ]
 };
 
+const line2 = {
+  _id: "def",
+  companyId: "otherCompanyId",
+  name: "Linea Mattia",
+  capacity: 6,
+  path: [
+    {
+      busStopId: bs1._id,
+      number: 1,
+      times: [
+        {
+          time: "14:00",
+          accessibility: true
+        },
+        {
+          time: "15:00",
+          accessibility: true
+        }
+      ]
+    },
+    {
+      idBusStop: bs3._id,
+      number: 2,
+      times: [
+        {
+          time: "14:10",
+          accessibility: true
+        },
+        {
+          time: "15:20",
+          accessibility: true
+        }
+      ]
+    }
+  ]
+};
+
 const mockLinesCollection = [
-  line1
+  line1,
+  line2
 ];
 
 describe('Test API - Line insertion', () =>{
@@ -127,6 +165,7 @@ describe('Test API - Line insertion', () =>{
           if (query._id) filtered = filtered.filter(x => x._id == query._id);
           if (query.companyId) filtered = filtered.filter(x => x.companyId == query.companyId);
           if (query.name) filtered = filtered.filter(x => x.name == query.name);
+          if (query.capacity) filtered = filtered.filter(x => x.capacity == query.capacity);
           if (query.path) filtered = filtered.filter(x => x.path == query.path);
 
           // Return the filtered items
@@ -171,6 +210,10 @@ describe('Test API - Line insertion', () =>{
                     "fieldMessage": "the field \"name\" must be a non-empty string"
                 },
                 {
+                  "fieldName": "capacity",
+                  "fieldMessage": "the field \"capacity\" must be positive number"
+                },
+                {
                     "fieldName": "path",
                     "fieldMessage": "the field \"path\" must be a non-empty array"
                 }
@@ -182,6 +225,7 @@ describe('Test API - Line insertion', () =>{
     it("POST request with correct data should return 201 with the account just created in the body", async () => {
         const response = await request(app).post("/api/v1/lines").query({userId: admin1._id}).send({
           name: "AnotherLine",
+          capacity: 9,
           path: [
             {
               busStopId: bs1._id,
@@ -196,18 +240,20 @@ describe('Test API - Line insertion', () =>{
         expect(response.status).toBe(201);
         expect(response.headers).toHaveProperty('location');
         expect(response.body).toHaveProperty('name');
+        expect(response.body).toHaveProperty('capacity');
         expect(response.body).toHaveProperty('path');
     });
 
     it("POST request with already inserted line should return 409 with an error in the body", async()=>{
         const body = {
           name: "AnotherLine",
+          capacity: 9,
           path: [
             {
               busStopId: bs2._id,
               number: 1,
               times: [
-                {time: "12:00", accessibility: true}
+                {time: "10:00", accessibility: true}
               ]
             }
           ]
