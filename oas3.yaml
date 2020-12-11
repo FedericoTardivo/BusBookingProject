@@ -419,7 +419,7 @@
             $ref: '#/components/responses/400BadRequest'
 
           '409':
-            description: Biglietto già acquistato
+            description: Biglietto non acquistabile
             content:
               application/json:
                 schema:
