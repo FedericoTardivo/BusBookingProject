@@ -442,14 +442,6 @@
           '204':
             description: Biglietto eliminato con successo.
 
-          '400':
-            description: Parametri non validi
-            content:
-              text/plain:
-                schema:
-                  type: string
-                  example: "Errore: parametri non validi per l'elimiazione"
-                  
           '403':
             $ref: '#/components/responses/403Forbidden'
 

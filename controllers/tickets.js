@@ -99,10 +99,10 @@ module.exports.deleteTicket=async (req,res)=>{
         return res.status(403).send("Accesso non autorizzato.");
     }
 
-    //delete the tiket
+    //try to delete the tiket
     if (await db.tickDB.delete(tickDB._id)){
         return res.status(204).send();
     } else {
-        
+        return res.status(500).send();
     }
 };
