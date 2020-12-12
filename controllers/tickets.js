@@ -70,9 +70,39 @@ module.exports.insertTicket=async (req,res)=>{
     //The request is valid
 
     //create _id for ticket
-    const _id=await db.tickets.insert(ticket);
+    const _id = await db.tickets.insert(ticket);
 
     //response e console log
     res.location("/api/v1/tickets/" + _id).status(201).json(ticket);
     //console.log("ticket " + _id + " added");
+};
+
+//Delete a tiket for a user by id
+module.exports.deleteTicket=async (req,res)=>{
+    
+    //check if the user is authenticated
+    if(!req.loggedUserId){
+        return res.status(401).send("Utente non autenticato.");
+    }
+
+    //reqeust of the tickets by db
+    var tickDB =( await db.tickets.findBy({_id: req.params.id}))[0];
+
+    //if ticket not exist
+    if(!tickDB){
+        return res.status(404).send(`Il biglietto con ID '${req.params.id}' non esiste.`)
+    }
+    
+    //check if the user who wants delete the tickets is the user who took that
+    var userTicket = (await db.users.findBy({_id: req.loggedUserId}))[0].userId;
+    if(tickDB.userId!=userTicket){
+        return res.status(403).send("Accesso non autorizzato.");
+    }
+
+    //delete the tiket
+    if (await db.tickDB.delete(tickDB._id)){
+        return res.status(204).send();
+    } else {
+        
+    }
 };

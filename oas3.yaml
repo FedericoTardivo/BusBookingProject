@@ -391,7 +391,7 @@
             
           '403':
             $ref: '#/components/responses/403Forbidden'
-
+    
     /tickets:
       post:
         description: Crea un nuovo biglietto
@@ -424,6 +424,45 @@
                 example:
                   fieldName: ticket
                   fieldMessage: Questo biglietto è già stato acquistato da questo utente
+
+    /tickets/{id}:
+      delete:
+        description: Elimina il biglietto tramite id, Riservato all'utente che ha prenotato il biglietto.
+        parameters:
+        - in: path
+          name:
+            -id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID del biglietto da eliminare
+          
+        responses:
+          '204':
+            description: Biglietto eliminato con successo.
+
+          '400':
+            description: Parametri non validi
+            content:
+              text/plain:
+                schema:
+                  type: string
+                  example: "Errore: parametri non validi per l'elimiazione"
+                  
+          '403':
+            $ref: '#/components/responses/403Forbidden'
+
+          '401':
+            $ref: '#/components/responses/401Unauthorized'
+
+          '404':
+            description: L'ID per cui è richiesta l'eliminazione non esiste.
+            content:
+              text/plain:
+                schema:
+                  type: string
+                  example: Il biglietto con ID '223a44ba-2222-111a-111a-999a999a999aa' non esiste.
 
   components:
     # Data models

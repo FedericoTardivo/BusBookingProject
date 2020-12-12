@@ -30,7 +30,7 @@ function loadTicketBooking() {
                 var stopname = stops.find(l=>l.id == tick.endBusStopId).name;
 
                 table.append(`<tr>
-                <td>${date.toDateString()} ${date.toLocaleTimeString()}</td>
+                <td>${date.toDateString()} alle ${date.toLocaleTimeString()}</td>
                 <td>${lname}</td>
                 <td>${tick.startTime}</td>
                 <td>${tick.arrivalTime}</td>
