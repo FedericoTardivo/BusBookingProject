@@ -378,6 +378,19 @@ describe('Test API - Tickets endpoint', () => {
         expect(response.body).toHaveProperty("startTime");
         expect(response.body).toHaveProperty("arrivalTime");
     });
+    
+    it("Buying a ticket when there are no available seats must return 409 error", async () => {
+        const body = {
+            lineId: line1._id,
+            startBusStopId: line1.path[0].busStopId,
+            endBusStopId: line1.path[1].busStopId,
+            startTime: new Date(`2020-12-11T${line1.path[0].times[0].time}:00+00:00`),
+            arrivalTime: new Date(`2020-12-11T${line1.path[1].times[0].time}:00+00:00`)
+        };
+        const response = await request(app).post("/api/v1/tickets").query({userId: user1._id}).send(body);
+
+        expect(response.status).toBe(409);
+    });*/
 });
 
 describe ('Test API - Delete Tickets', () => {

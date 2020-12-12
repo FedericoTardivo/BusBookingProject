@@ -1,4 +1,4 @@
-const userID = sessionStorage.getItem("LoggedUserID"); //type is yet User 
+const userLoggedID = sessionStorage.getItem("LoggedUserID"); //type is yet User 
 var lines = [];
 var stops = [];
 var now = new Date (Date.now());
@@ -12,7 +12,7 @@ function loadTable(){
 function loadTicketBooking() { 
 
     $.ajax({
-        url: `/api/v1/users/${userID}/tickets?` + $.param({userId: userID})
+        url: `/api/v1/users/${userLoggedID}/tickets?` + $.param({userId: userLoggedID})
     })
         .done((result) => {
 
@@ -65,16 +65,17 @@ function verificaBottone(TickStart, TickID){
 
 function eliminaPrenotazione(IDBiglietto){
     $.ajax({
-        url: `/api/v1/tickets/${IDBiglietto}?` + $.param({userId: userID}),
+        url: `/api/v1/tickets/${IDBiglietto}?` + $.param({userId: userLoggedID}),
         type: "DELETE"
         })
 
         .done((result) => {
+            alert("Biglietto eliminato con successo");
             loadTabel();
         })
 
         .fail((jqXHR) => {
-            window.alert(jqXHR.responseJSON.message);
+            //window.alert(jqXHR.responseJSON.message);
         });
 }
 

@@ -152,26 +152,28 @@ module.exports.deleteTicket=async (req,res)=>{
     }
 
     //reqeust of the tickets by db
-    var tickDB =( await db.tickets.findBy({_id: req.params.id}))[0];
+    const tickDB = (await db.tickets.findBy({_id: req.params.IDBiglietto}))[0];
+    //var tickDB = (await db.tickets.findBy({_id: req.params.IDBiglietto}))[0];
 
     //if ticket not exist
     if(!tickDB){
-        return res.status(404).send(`Il biglietto con ID '${req.params.id}' non esiste.`)
+        return res.status(404).send(`Il biglietto con ID '${req.params.IDBiglietto}' non esiste.`)
     }
     
-    //check if the user who wants delete the tickets is the user who took that
-    var userTicket = (await db.users.findBy({_id: req.loggedUserId}))[0].userId;
+    //check if the user who wants delete the tickets is the user who took that                              qui è l'errore
+    const userTicket = req.loggedUserId;
     if(tickDB.userId!=userTicket){
         return res.status(403).send("Accesso non autorizzato.");
     }
 
     //try to delete the tiket
-    if (await db.tickDB.delete(tickDB._id)){
+    if (await db.tickets.delete(tickDB._id)){
         return res.status(204).send();
     } else {
         return res.status(500).send();
     }
 };
+
 // time => "12:00"
 function getRunIndexOfLine(line, busStopId, time) {
     // Get the run
