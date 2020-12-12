@@ -15,8 +15,8 @@ module.exports.insertTicket=async (req,res)=>{
     ticket.lineId=req.body.lineId;
     ticket.startBusStopId=req.body.startBusStopId;
     ticket.endBusStopId=req.body.endBusStopId;
-    ticket.startTime = Date.parse(req.body.startTime);      // Returns NaN if the string cannot be parsed correctly
-    ticket.arrivalTime = Date.parse(req.body.arrivalTime);
+    ticket.startTime = new Date(req.body.startTime);
+    ticket.arrivalTime = new Date(req.body.arrivalTime);
     
     let valid=true;
     let errResp=new BadRequestResponse();
@@ -40,13 +40,13 @@ module.exports.insertTicket=async (req,res)=>{
     }
 
     //validate startTime
-    if(!ticket.startTime || isNaN(ticket.startTime)){
+    if(!ticket.startTime || !(ticket.startTime instanceof Date && !isNaN(ticket.startTime))){
         valid=false;
         errResp.fieldsErrors.push(new FieldError('startTime','The field "startTime" must be a valid date'));
     }
 
     //validate arrivalTime
-    if(!ticket.arrivalTime || isNaN(ticket.arrivalTime)){
+    if(!ticket.arrivalTime || !(ticket.arrivalTime instanceof Date && !isNaN(ticket.arrivalTime))){
         valid=false;
         errResp.fieldsErrors.push(new FieldError('arrivalTime','The field "arrivalTime" must be a valid date'));
     }
@@ -58,7 +58,7 @@ module.exports.insertTicket=async (req,res)=>{
     }
 
     //check if ticket is already bought
-    if((await db.tickets.findBy({userId : ticket.userId , lineId : ticket.lineId , startBusStopId : ticket.startBusStopId , endBusStopId : ticket.endBusStopId , startTime : new Date(ticket.startTime) , arrivalTime : new Date(ticket.arrivalTime)})).length>0)
+    if((await db.tickets.findBy({userId: ticket.userId, lineId: ticket.lineId, startBusStopId: ticket.startBusStopId, endBusStopId: ticket.endBusStopId, startTime: ticket.startTime, arrivalTime: ticket.arrivalTime})).length>0)
     {
         return res.status(409).json({
             fieldName: "ticket",
@@ -74,9 +74,6 @@ module.exports.insertTicket=async (req,res)=>{
     let tLine = (await db.lines.findBy({_id: ticket.lineId}))[0];
     // Initialize the available seats to the capacity of the line
     let availSeats = tLine.capacity;
-    // Convert the start and end times to dates
-    ticket.startTime = new Date(ticket.startTime);
-    ticket.arrivalTime = new Date(ticket.arrivalTime);
     // Each run has {capacity} available seats
     // Get the index of the run of the ticket the user wants to buy
     let runIndex = getRunIndexOfLine(tLine, ticket.startBusStopId, `${("0" + ticket.startTime.getHours()).slice(-2)}:${("0" + ticket.startTime.getMinutes()).slice(-2)}`); // Format hours and minutes as 2-digits numbers
