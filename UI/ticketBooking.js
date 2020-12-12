@@ -2,8 +2,14 @@ var lines = [];
 var path =[];
 var busStops=[];
 var ticket ={};
+const userId = sessionStorage.getItem("LoggedUserID");
 
 function refreshLinesTable() {
+    if(!userId){
+        confirm("Esegui il login!");
+        location.replace("login.html");
+    }
+    
     $("#tableAlert1").hide();
 
     $("#startStopTable tbody").empty();
@@ -144,13 +150,6 @@ function buyTicket(){
     if (r == true) {
         var newTicket = {
             
-        }
-
-        const userId = sessionStorage.getItem("LoggedUserID");
-        
-        if(!userId){
-            confirm("Esegui il login!");
-            location.replace("login.html");
         }
 
         /*$.ajax({
