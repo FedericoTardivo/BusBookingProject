@@ -4,6 +4,7 @@ class Line {
             this._id = '',
             this.companyId = '',
             this.name = '',
+            this.capacity = '';
             this.path =[] 
         }
     }

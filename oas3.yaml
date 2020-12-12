@@ -222,7 +222,7 @@
                 schema:
                   type: array
                   items:
-                    type: object
+                    $ref:  "#/components/schemas/LineSelf"
       
       post:
         description: Crea una nuova linea
@@ -243,6 +243,9 @@
           '400':
             $ref: '#/components/responses/400BadRequest'
           
+          '401':
+            $ref: '#/components/responses/401Unauthorized'
+
           '409':
             description: Linea già esistente
             content:
@@ -416,7 +419,7 @@
             $ref: '#/components/responses/400BadRequest'
 
           '409':
-            description: Biglietto già acquistato
+            description: Biglietto non acquistabile
             content:
               application/json:
                 schema:
@@ -542,10 +545,13 @@
         type: object
         required:
           - name
+          - capacity
           - path
         properties:
           name:
             type: string
+          capacity: 
+            type: integer
           path:
             type: array
             items:
