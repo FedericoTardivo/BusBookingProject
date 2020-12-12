@@ -15,7 +15,7 @@ function refreshLinesTable() {
             var table = $("#linesTable tbody");
             table.empty();
             $.each(result, (index, line) => {
-                table.append(`<tr><td onclick='refreshStopsTable("${line._id}","${line.name}");'>${line.name}</td></tr>`)
+                table.append(`<tr id=${line._id}><td onclick='refreshStopsTable("${line._id}","${line.name}");'>${line.name}</td></tr>`)
             });
         })
         .fail((jqXHR, textStatus, errorThrown) => {
@@ -29,6 +29,22 @@ function refreshStopsTable(lineId,lineName) {
         alert("Prima seleziona una data dal calendario");
         return;
     }
+
+    document.getElementById("datepicker").disabled=true;
+
+    $("#linesTable tbody").children().each(function () {
+        this.style.backgroundColor = "white";
+    });
+
+    $("#startTimeTable tbody").children().each(function () {
+        this.style.backgroundColor = "white";
+    });
+
+    $("#arrivalTimeTable tbody").children().each(function () {
+        this.style.backgroundColor = "white";
+    });
+
+    document.getElementById(lineId).style.backgroundColor = "#00ccff";
     
     ticket={};
     ticket.lineId=lineId;
@@ -49,7 +65,7 @@ function refreshStartStopTable(lineId){
         //console.log(path);
         $.each(path, (index,elem) => {
             let name=busStops.find(busStop => busStop.id==elem.busStopId).name;
-            table.append(`<tr><td onclick='refreshStartTimeTable("${elem.busStopId}","${name}");'>${name}</td></tr>`);
+            table.append(`<tr id="start${elem.busStopId}"><td onclick='refreshStartTimeTable("${elem.busStopId}","${name}");'>${name}</td></tr>`);
         });
 }
 
@@ -59,11 +75,15 @@ function refreshEndStopTable(lineId){
         path=(lines.find(x => x._id==lineId)).path;
         $.each(path, (index,elem) => {
             let name=busStops.find(busStop => busStop.id==elem.busStopId).name;
-            table.append(`<tr><td onclick='refreshArrivalTimeTable("${elem.busStopId}","${name}");'>${name}</td></tr>`);
+            table.append(`<tr id="stop${elem.busStopId}"><td onclick='refreshArrivalTimeTable("${elem.busStopId}","${name}");'>${name}</td></tr>`);
         });
 }
 
 function refreshStartTimeTable(startBusStopId,startBusStopName){
+    $("#startStopTable tbody").children().each(function () {
+        this.style.backgroundColor = "white";
+    });
+    document.getElementById("start" + startBusStopId).style.backgroundColor = "#00ccff";
     ticket.startTime='';
     var table = $("#startTimeTable tbody");
     ticket.startBusStopId=startBusStopId;
@@ -71,11 +91,15 @@ function refreshStartTimeTable(startBusStopId,startBusStopName){
     table.empty();
     var thisPath = path.find(x => x.busStopId==startBusStopId);
     $.each(thisPath.times, (index,time)=>{
-        table.append(`<tr><td onclick='setTicketTimes("start","${time.time}")';>${time.time}</td></tr>`);
+        table.append(`<tr id="start${time.time}"><td onclick='setTicketTimes("start","${time.time}")';>${time.time}</td></tr>`);
     });
 }
 
 function refreshArrivalTimeTable(endBusStopId,endBusStopName){
+    $("#endStopTable tbody").children().each(function () {
+        this.style.backgroundColor = "white";
+    });
+    document.getElementById("stop" + endBusStopId).style.backgroundColor = "#00ccff";
     ticket.arrivalTime='';
     var table = $("#arrivalTimeTable tbody");
     ticket.endBusStopId=endBusStopId;
@@ -83,7 +107,7 @@ function refreshArrivalTimeTable(endBusStopId,endBusStopName){
     table.empty();
     var thisPath = path.find(x => x.busStopId==endBusStopId);
     $.each(thisPath.times, (index,time)=>{
-        table.append(`<tr><td onclick='setTicketTimes("arrival","${time.time}")';>${time.time}</td></tr>`);
+        table.append(`<tr id="arrival${time.time}"><td onclick='setTicketTimes("arrival","${time.time}")';>${time.time}</td></tr>`);
     });
 }
 
@@ -92,8 +116,16 @@ function setTicketTimes(which,time){
     let date=new Date();
     //date.se
     if(which=="start"){
+        $("#startTimeTable tbody").children().each(function () {
+            this.style.backgroundColor = "white";
+        });
+        document.getElementById(which + time).style.backgroundColor = "#00ccff";
         ticket.startTime=document.getElementById("datepicker").value + "T" + time +":00.000+01:00";
     }else if(which=="arrival"){
+        $("#arrivalTimeTable tbody").children().each(function () {
+            this.style.backgroundColor = "white";
+        });
+        document.getElementById(which + time).style.backgroundColor = "#00ccff";
         ticket.arrivalTime=document.getElementById("datepicker").value + "T" + time +":00.000+01:00";
     }
 }
