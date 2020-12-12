@@ -6,6 +6,11 @@ var ticket ={};
 function refreshLinesTable() {
     $("#tableAlert1").hide();
 
+    $("#startStopTable tbody").empty();
+    $("#endStopTable tbody").empty();
+    $("#startTimeTable tbody").empty();
+    $("#arrivalTimeTable tbody").empty();
+
     // Load the lines and show them in the table
     $.ajax({
         url: "/api/v1/lines"
@@ -137,8 +142,33 @@ function buyTicket(){
     var text = "Confermi di voler acquistare questo biglietto?\n" + `Linea: ${ticket.lineName}\n` + `Partenza: ${ticket.startBusStopName} , il ${start.getDate()}-${start.getMonth()+1}-${start.getFullYear()} alle ${start.getHours()}:${start.getMinutes()}\n` + `Arrivo: ${ticket.endBusStopName} , il ${arrival.getDate()}-${arrival.getMonth()+1}-${arrival.getFullYear()} alle ${arrival.getHours()}:${arrival.getMinutes()}`;
     var r = confirm(text);
     if (r == true) {
-    console.log("biglietto acquistato");
+        var newTicket = {
+            
+        }
+
+        const userId = sessionStorage.getItem("LoggedUserID");
+        
+        if(!userId){
+            confirm("Esegui il login!");
+            location.replace("login.html");
+        }
+
+        /*$.ajax({
+            url: "/api/v1/tickets?" + $.param({userId}),
+            type : "POST",
+            data: JSON.stringify(newTicket),
+            contentType: "application/json",
+            dataType: "json"
+        })
+            .done((result) => {
+                
+            })
+            .fail((jqXHR, textStatus, errorThrown) => {
+                $("#tableErrMsg1").text(`Impossibile acquistare il biglietto`);
+                $("#tableAlert1").show();
+            });*/
+        console.log("biglietto acquistato");
     } else {
-    console.log("acquisto annullato");
+        console.log("acquisto annullato");
     }
 }
