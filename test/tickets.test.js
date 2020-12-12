@@ -154,7 +154,7 @@ describe ('Test API - Delete Tickets', () => {
     });
 
     it("Request from unauthenticated user should return 401 error", (done) => {
-        request(app)
+        supertest(app)
             .delete(`/api/v1/tickets/${Tick1._id}`)
 
             .expect(401)
@@ -162,7 +162,7 @@ describe ('Test API - Delete Tickets', () => {
     });
 
     it("Request from a user different from the owner of the bus stop should return 403 error", (done) => {
-        request(app)
+        supertest(app)
             .delete(`/api/v1/tickets/${Tick3._id}`)
             .query({userId: US1._id})
 
@@ -171,7 +171,7 @@ describe ('Test API - Delete Tickets', () => {
     });
 
     it("Request with a non-existing ID should return 404 error", (done) => {
-        request(app)
+        supertest(app)
             .delete(`/api/v1/tickets/IDSBagliato`)
             .query({userId: US1._id})
 
@@ -180,7 +180,7 @@ describe ('Test API - Delete Tickets', () => {
     });
     
     it("Correct request should return 204 ", (done) => {
-        request(app)
+        supertest(app)
             .delete(`/api/v1/tickets/${Tick1._id}`)
             .query({userId: US1._id})
 
