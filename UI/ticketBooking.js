@@ -32,6 +32,7 @@ function refreshLinesTable() {
         .fail((jqXHR, textStatus, errorThrown) => {
             $("#tableErrMsg1").text(`Risposta del server [${jqXHR.status} - ${errorThrown}]: ${jqXHR.responseText}`);
             $("#tableAlert1").show();
+            window.scrollTo(0,0);
         });
 }
 
@@ -66,7 +67,11 @@ function refreshStopsTable(lineId,lineName) {
         busStops=res;
         refreshStartStopTable(lineId);
         refreshEndStopTable(lineId);
-    })
+    }).fail((jqXHR, textStatus, errorThrown) => {
+        $("#tableErrMsg1").text(`Risposta del server [${jqXHR.status} - ${errorThrown}]: ${jqXHR.responseText}`);
+        $("#tableAlert1").show();
+        window.scrollTo(0,0);
+    });
 }
 
 function refreshStartStopTable(lineId){
@@ -148,26 +153,36 @@ function buyTicket(){
     var text = "Confermi di voler acquistare questo biglietto?\n" + `Linea: ${ticket.lineName}\n` + `Partenza: ${ticket.startBusStopName} , il ${start.getDate()}-${start.getMonth()+1}-${start.getFullYear()} alle ${start.getHours()}:${start.getMinutes()}\n` + `Arrivo: ${ticket.endBusStopName} , il ${arrival.getDate()}-${arrival.getMonth()+1}-${arrival.getFullYear()} alle ${arrival.getHours()}:${arrival.getMinutes()}`;
     var r = confirm(text);
     if (r == true) {
-        var newTicket = {
-            
+        var ticketToBeBuyed = {
+            lineId : ticket.lineId,
+            startBusStopId : ticket.startBusStopId,
+            endBusStopId : ticket.endBusStopId,
+            startTime : start,
+            arrivalTime : arrival
         }
 
-        /*$.ajax({
+        $.ajax({
             url: "/api/v1/tickets?" + $.param({userId}),
             type : "POST",
-            data: JSON.stringify(newTicket),
+            data: JSON.stringify(ticketToBeBuyed),
             contentType: "application/json",
             dataType: "json"
         })
             .done((result) => {
-                
+                alert("Biglietto acquistato");
+                window.scrollTo(0,0);
+                location.reload();
             })
             .fail((jqXHR, textStatus, errorThrown) => {
-                $("#tableErrMsg1").text(`Impossibile acquistare il biglietto`);
+                $("#tableErrMsg1").text(`Risposta del server [${jqXHR.status} - ${errorThrown}]: ${jqXHR.responseText}`);
                 $("#tableAlert1").show();
-            });*/
-        console.log("biglietto acquistato");
+                window.scrollTo(0,0);
+            });
+        //console.log("biglietto acquistato");
     } else {
-        console.log("acquisto annullato");
+        //console.log("acquisto annullato");
+        alert("Acquisto annullato");
+        window.scrollTo(0,0);
+        location.reload();
     }
 }
