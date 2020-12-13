@@ -79,17 +79,9 @@
                     </div>
                     
                     <form>
-                        <label for="name">Nome Linea</label>
-                        <input type="text" class="form-control" id="name" required>
-                           
-                            <label for="idBusStop">ID Fermata</label>
-                            <input type="text" class="form-control" id="idBusStop_1">
-                            <label for="number">Ordine fermata</label>
-                            <input type="text" class="form-control" id="number">
-                            <label for="time">Orario di Arrivo</label>
-                            <input type="text" class="form-control" id="Number">
-                        </div>
-                        <button class="btn btn-primary" type="button" onclick="ChangeLine()">Conferma Modifiche</button>
+                        <div class="form-group" id="LinesContainer"></div>
+                        <button class="btn btn-primary" type="button" onclick="selectLine()">Seleziona la Linea da modificare</button>
+                        <button class="btn btn-primary" type="button" onclick="ApplyChangesToLine()">Conferma Modifiche</button>
                     </form>
                 </div>
             </div>
