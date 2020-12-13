@@ -1,4 +1,3 @@
-//only for try heroku
 const UserLogin = require('../models/UserLogin.js');
 const BadRequestResponse = require('../models/BadRequestResponse.js');
 const FieldError = require('../models/FieldError.js');
@@ -12,7 +11,6 @@ module.exports.authenticationUser = async (req, res) => {
 	user.password = req.body.password;
 
     let valid = true;
-    let isAdmin = false;
     let errResp = new BadRequestResponse();
 	
 	//Validate email

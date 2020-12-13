@@ -16,10 +16,17 @@ module.exports.getLines = async (req,res) => {
 
 // this inserts the passed Line in the db
 module.exports.insertLine = async (req, res) => {
+    // Check if the user is authenticated
+    if(!req.loggedUserId) {
+        return res.status(401).send("Utente non autenticato.");
+    }
+
     const line = new Line();
-    // Set the owner of the line as the logged user
-    line.adminId = req.loggedUserId;
+    // Set the owner of the line as the company of the logged user
+    const userCompanyId = (await db.admins.findBy({_id: req.loggedUserId}))[0].companyId;
+    line.companyId = userCompanyId;
     line.name = req.body.name;
+    line.capacity = req.body.capacity;
     line.path = req.body.path;
 
     let validField = true;
@@ -37,15 +44,15 @@ module.exports.insertLine = async (req, res) => {
         ResponseError.fieldsErrors.push(new FieldErr('path', 'the field "path" must be a non-empty array'));
     } else {
         line.path.forEach(async x => {
-            //idBusStop validation
-            if(!x.idBusStop || typeof x.idBusStop != 'string'){
+            //busStopId validation
+            if(!x.busStopId || typeof x.busStopId != 'string'){
                 validField = false;
-                ResponseError.fieldsErrors.push(new FieldErr('idBusStop', 'the field "idBusStop" must be a non-empty string'));
+                ResponseError.fieldsErrors.push(new FieldErr('busStopId', 'the field "busStopId" must be a non-empty string'));
             } else {
                 // Check if the ID of the bus stop exists
-                if ((await db.busStops.findBy({_id : x.idBusStop})).length == 0) {
+                if ((await db.busStops.findBy({_id : x.busStopId})).length == 0) {
                     validField = false;
-                    ResponseError.fieldsErrors.push(new FieldErr('idBusStop', `the bus stop with ID ${x.idBusStop} does not exist`));
+                    ResponseError.fieldsErrors.push(new FieldErr('busStopId', `the bus stop with ID ${x.busStopId} does not exist`));
                 }
             }
             //number validation
@@ -74,6 +81,12 @@ module.exports.insertLine = async (req, res) => {
         });
     }
 
+    //capacity validation
+    if(line.capacity == undefined || line.capacity < 1){
+        validField = false;
+        ResponseError.fieldsErrors.push(new FieldErr('capacity', 'the field "capacity" must be a positive number'));
+    }
+
     //if one of the fields are not valid, this sends a BadRequest error
     if (!validField){
         ResponseError.message = 'Unvalid Request.';
@@ -81,13 +94,13 @@ module.exports.insertLine = async (req, res) => {
     }
 
     //if a line is already present in the db, this Sends an error, signalling it
-    if((await db.lines.findBy({name : line.name , adminId : req.loggedUserId})).length > 0){
+    if((await db.lines.findBy({name : line.name , companyId : userCompanyId})).length > 0){
         return res.status(409).json({
             fieldName: "name",
             fieldMessage: `La linea \"${line.name}\" è già esistente`
         });
     }
-
+    
     //if, instead, the request is valid
     line._id = await db.lines.insert(line);
     
