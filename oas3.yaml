@@ -252,6 +252,38 @@
               application/json:
                 schema:
                   $ref: '#/components/schemas/LineError'
+      put:
+        description: Crea una nuova linea
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      id:
+                        type: string
+                  - $ref: '#/components/schemas/Line'
+        responses:
+          '201':
+            description: Linea inserita correttamente
+            content: 
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/LineSelf' 
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+          '401':
+            $ref: '#/components/responses/401Unauthorized'
+          '403':
+            $ref: '#/components/responses/403Forbidden'
+          '409':
+            description: Linea già esistente
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/LineError'
 
     /users:
       post:
