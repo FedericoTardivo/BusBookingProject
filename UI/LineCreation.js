@@ -1,13 +1,15 @@
+let BusStops = [];
+
 function refreshLinesTable() {
     // Load the Lines and show them in the table
     $.ajax({
-        url: "/api/v1/lines?" + $.param({userId: "abc"})
+        url: "/api/v1/lines"
     })
         .done((result) => {
             var table = $("#LinesTable tbody");
             table.empty();
-            $.each(result, (index, bs) => {
-                table.append(`<tr><td>${line._id}</td><td>${line.name}</td></tr>`)
+            $.each(result, (index, line) => {
+               table.append(`<tr><td>${line._id}</td><td>${line.name}</td></tr>`)
             });
         })
         .fail((jqXHR, textStatus, errorThrown) => {
@@ -16,12 +18,40 @@ function refreshLinesTable() {
         });
 }
 
+function retrieveBusStops(){
+$.ajax({
+    url: "/api/v1/busStops"
+})
+    .done((result) => {
+        BusStops = result.map((b)=> {return {
+            id: b.id, name: b.name
+        }});
+
+    })
+    .fail((jqXHR, textStatus, errorThrown) => {
+        $("#tableErrMsg").text(`Risposta del server [${jqXHR.status} - ${errorThrown}]: ${jqXHR.responseText}`);
+        $("#tableAlert").show();
+    })
+}
+
 function addBusStoptoLine(){
-  
+    
+    var Stopdiv = document.createElement("div");
+    Stopdiv.classList.add("busstop");
+    var newselect= document.createElement("select");
+    newselect.id = "StopList"
+    
+    BusStops.forEach(option =>
+        newselect.options.add(
+          new Option(option.name, option.id, false)
+        ));
     var newinput = document.createElement("input");
     newinput.type = "text";
-    newinput.id = "idBusStop_2";
-    document.body.insertBefore("idBusStop_2","number");
+ //   newinput.class = "form-control";
+ //   newinput.id = "idBusStop";
+    Stopdiv.appendChild(newselect);
+    Stopdiv.appendChild(newinput);
+    document.getElementById("StopsContainer").appendChild(Stopdiv);
 
 }
 
@@ -30,22 +60,30 @@ function addLine() {
     $("#formAlertSuccess").hide();
 
     var newName = $("#name").val();
-    var idBusStop = $('#idBusStop').val();
-    var number = $('#number').val();
-    var time = $('#time').val();
-    var accessibility = $('#accessibility').val();
+    var capacity = $("#capacity").val();
+    let path = [];
+    $(".busstop").each((index, obj) => {
+        var idBusStop = $(obj).children("select").val()
+        var number = index + 1
+        var time = $(obj).children("input").val().split(",")
+        let times = time.map(t=>{
+            return{time:t, accessibility: false}
+        })
+        path.push({busStopId: idBusStop,number:number,times: times})
+    });
+    
+    
 
-    let times = {time,accessibility};
-    let path = [
-        {idBusStop,number,times}
-    ]
-    let line = {newName,path};
+//    var accessibility = $('#accessibility').val();
 
+    
+    let line = {name:newName,capacity:capacity,path:path};
+ 
 
     $.ajax({
-        url: "/api/v1/Lines?" + $.param({userId: "abc"}),
+        url: "/api/v1/lines?" + $.param({userId: "5fd2481e7dea2df47325ef71"}),
         type: "POST",
-        data: JSON.stringify({name: line,}),
+        data: JSON.stringify(line),
         contentType: "application/json",
         dataType: "json"
     })
@@ -57,4 +95,5 @@ function addLine() {
             $("#formAlert").show();
         })
         .always(() => refreshLinesTable());
+        
 }
