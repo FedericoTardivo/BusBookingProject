@@ -125,15 +125,13 @@ module.exports.insertLine = async (req, res) => {
 module.exports.changeLine = async (req, res) => {
     if(!req.loggedUserId){
         return res.status(401).send("Utente non autenticato.")
-    }
+    };
     const line = new Line();
     // Set the owner of the line as the logged user
-    console.log(req.loggedUserId);
-    
+    //console.log(req.loggedUserId);
     const userCompanyId = (await db.admins.findBy({_id: req.loggedUserId}))[0].companyId;
-    
     line.companyId = userCompanyId;
-    line._id = req.body._id;
+    line._id = req.params.id;
     line.name = req.body.name;
     line.path = req.body.path;
     line.capacity = req.body.capacity;

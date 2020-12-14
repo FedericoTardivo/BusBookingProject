@@ -271,19 +271,23 @@ describe('Test API - Line insertion', () =>{
 });
 
 describe('Test API - Lines Modification',() => {
+  var tempLineId;
+  var tempAdminId;
+  var tempCompanyId;
   beforeAll(async () => {
-    await db.lines.insert(
+    tempCompanyId = await db.companies.insert({
+      name : "compagniaDiProva"
+    });
+    tempLineId=await db.lines.insert(
       {
-        _id: "id_di_prova_per_modifica_linea",
-        companyId: "id_compagnia_di_prova",
+        companyId: tempCompanyId,
         name: "Linea di prova per modifica",
         capacity: "4",
         path: [{"busStopId":"b6a6cb98-6341-48ff-b220-3513dffdded7","number":1,"times":[{"time":"12:00","accessibility":false}]}]
       }
     );
-    await db.admins.insert({
-        _id: "id_admin",
-        companyId: "id_compagnia_di_prova",
+    tempAdminId=await db.admins.insert({
+        companyId: tempCompanyId,
         email: "admin@example.com",
         password: "password"
     });
@@ -292,12 +296,48 @@ describe('Test API - Lines Modification',() => {
   afterAll(async () => {
     await db.lines.clear();
     await db.admins.clear();
+    await db.companies.clear();
   });
   
   it("Put request with user not logged should return 401", async () => {
-    const response = await request(app).put(`/api/v1/lines`).query({userId: "id_admin"});
+    const response = await request(app).put(`/api/v1/lines/${tempLineId}`);
     expect(response.status).toBe(401);
     expect(response.text).toBe("Utente non autenticato.");
   });
 
+  it("Put request with not existing line should return 404", async () => {
+    const response = await request(app).put(`/api/v1/lines/id_non_esistente`).query({userId: tempAdminId});
+    expect(response.status).toBe(404);
+    expect(response.text).toBe("404: Not Found");
+  });
+
+  it("Put request with not ownded line should return 403", async () => {
+    const response = await request(app).put(`/api/v1/lines/${tempLineId}`).query({userId: tempAdminId}).send({
+      companyId : "not the right one"
+    });
+    expect(response.status).toBe(403);
+    expect(response.text).toBe("Prohibited access");
+  });
+
+  it("Put request with wrong parameters should return 400", async () => {
+    const response = await request(app).put(`/api/v1/lines/${tempLineId}`).query({userId: tempAdminId}).send({
+        _id: tempLineId,
+        companyId: tempCompanyId,
+        name: "Linea di prova per modifica",
+        capacity: 0,
+        path: [{"busStopId":"b6a6cb98-6341-48ff-b220-3513dffdded7","number":1,"times":[{"time":"12:00","accessibility":false}]}]
+    });
+    expect(response.status).toBe(400);
+  });
+
+  it("Put request with right parameters should return 200", async () => {
+    const response = await request(app).put(`/api/v1/lines/${tempLineId}`).query({userId: tempAdminId}).send({
+        _id: tempLineId,
+        companyId: tempCompanyId,
+        name: "Linea di prova per modifica",
+        capacity: 5,
+        path: [{"busStopId":"b6a6cb98-6341-48ff-b220-3513dffdded7","number":1,"times":[{"time":"12:00","accessibility":false}]}]
+    });
+    expect(response.status).toBe(200);
+  });
 });
