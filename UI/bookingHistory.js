@@ -71,7 +71,7 @@ function eliminaPrenotazione(IDBiglietto){
 
         .done((result) => {
             alert("Biglietto eliminato con successo");
-            loadTabel();
+            loadTable();
         })
 
         .fail((jqXHR) => {

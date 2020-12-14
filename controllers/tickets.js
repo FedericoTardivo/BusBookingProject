@@ -152,12 +152,12 @@ module.exports.deleteTicket=async (req,res)=>{
     }
 
     //reqeust of the tickets by db
-    const tickDB = (await db.tickets.findBy({_id: req.params.IDBiglietto}))[0];
+    const tickDB = (await db.tickets.findBy({_id: req.params.id}))[0];
     //var tickDB = (await db.tickets.findBy({_id: req.params.IDBiglietto}))[0];
 
     //if ticket not exist
     if(!tickDB){
-        return res.status(404).send(`Il biglietto con ID '${req.params.IDBiglietto}' non esiste.`)
+        return res.status(404).send(`Il biglietto con ID '${req.params.id}' non esiste.`)
     }
     
     //check if the user who wants delete the tickets is the user who took that                              qui è l'errore

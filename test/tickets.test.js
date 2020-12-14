@@ -241,16 +241,16 @@ const Tick3 = new TICK();
 Tick1._id = 'T3';
 Tick1.userId = 'US2';
 
-const MockUSCollection = {
+const MockUSCollection = [
     US1,
     US2,
     US3
-}
-const MockTickCollection ={
+]
+const MockTickCollection =[
     Tick1,
     Tick2,
     Tick3
-}
+]
 
 
 
@@ -429,7 +429,7 @@ describe ('Test API - Delete Tickets', () => {
     });
 
     it("Request from unauthenticated user should return 401 error", (done) => {
-        supertest(app)
+        request(app)
             .delete(`/api/v1/tickets/${Tick1._id}`)
 
             .expect(401)
@@ -437,7 +437,7 @@ describe ('Test API - Delete Tickets', () => {
     });
 
     it("Request from a user different from the owner of the bus stop should return 403 error", (done) => {
-        supertest(app)
+        request(app)
             .delete(`/api/v1/tickets/${Tick3._id}`)
             .query({userId: US1._id})
 
@@ -446,7 +446,7 @@ describe ('Test API - Delete Tickets', () => {
     });
 
     it("Request with a non-existing ID should return 404 error", (done) => {
-        supertest(app)
+        request(app)
             .delete(`/api/v1/tickets/IDSBagliato`)
             .query({userId: US1._id})
 
@@ -455,7 +455,7 @@ describe ('Test API - Delete Tickets', () => {
     });
     
     it("Correct request should return 204 ", (done) => {
-        supertest(app)
+        request(app)
             .delete(`/api/v1/tickets/${Tick1._id}`)
             .query({userId: US1._id})
 
