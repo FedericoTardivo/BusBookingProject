@@ -342,8 +342,7 @@ describe('Test API - Tickets endpoint', () => {
         console.log(response.body);
 
         expect(response.status).toBe(409);
-        expect(response.body).toHaveProperty("fieldName");
-        expect(response.body).toHaveProperty("fieldMessage");
+        expect(response.body).toHaveProperty("message");
     });
 
     // Buy the same ticket again should result in an error
