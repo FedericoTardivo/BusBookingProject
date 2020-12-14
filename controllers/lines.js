@@ -114,10 +114,11 @@ module.exports.changeLine = async (req, res) => {
     }
     const line = new Line();
     // Set the owner of the line as the logged user
-    line.adminId = req.loggedUserId;
+    line.companyId = req.loggedUserId;
     line._id = req.body.id;
     line.name = req.body.name;
     line.path = req.body.path;
+    line.capacity = req.body.capacity;
 
     let validField = true;
     let ResponseError = new BadRequestResponse();
@@ -134,10 +135,15 @@ module.exports.changeLine = async (req, res) => {
             return res.status(404).send("404: Not Found");
         }
         else{
-            if(linetemp[0].adminId != req.loggedUserId){
+            if(linetemp[0].companyId != req.loggedUserId){
                 return res.status(403).send("Prohibited access");
             }
         }
+    }
+    //capacity validation
+    if(line.capacity == undefined || line.capacity < 1){
+        validField = false;
+        ResponseError.fieldsErrors.push(new FieldErr('capacity', 'the field "capacity" must be a positive number'));
     }
     //name validation
     if(!line.name || typeof line.name != 'string'){
