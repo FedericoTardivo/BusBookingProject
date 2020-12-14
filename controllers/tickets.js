@@ -143,6 +143,37 @@ module.exports.insertTicket=async (req,res)=>{
     res.location("/api/v1/tickets/" + id).status(201).json(ticket);
 };
 
+//Delete a tiket for a user by id
+module.exports.deleteTicket=async (req,res)=>{
+    
+    //check if the user is authenticated
+    if(!req.loggedUserId){
+        return res.status(401).send("Utente non autenticato.");
+    }
+
+    //reqeust of the tickets by db
+    const tickDB = (await db.tickets.findBy({_id: req.params.id}))[0];
+    //var tickDB = (await db.tickets.findBy({_id: req.params.IDBiglietto}))[0];
+
+    //if ticket not exist
+    if(!tickDB){
+        return res.status(404).send(`Il biglietto con ID '${req.params.id}' non esiste.`)
+    }
+    
+    //check if the user who wants delete the tickets is the user who took that                              qui è l'errore
+    const userTicket = req.loggedUserId;
+    if(tickDB.userId!=userTicket){
+        return res.status(403).send("Accesso non autorizzato.");
+    }
+
+    //try to delete the tiket
+    if (await db.tickets.delete(tickDB._id)){
+        return res.status(204).send();
+    } else {
+        return res.status(500).send();
+    }
+};
+
 // time => "12:00"
 function getRunIndexOfLine(line, busStopId, time) {
     // Get the run
