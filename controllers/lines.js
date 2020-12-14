@@ -114,8 +114,9 @@ module.exports.changeLine = async (req, res) => {
     }
     const line = new Line();
     // Set the owner of the line as the logged user
-    line.companyId = req.loggedUserId;
-    line._id = req.body.id;
+    const userCompanyId = (await db.admins.findBy({_id: req.loggedUserId}))[0].companyId;
+    line.companyId = userCompanyId;
+    line._id = req.body._id;
     line.name = req.body.name;
     line.path = req.body.path;
     line.capacity = req.body.capacity;
@@ -135,7 +136,7 @@ module.exports.changeLine = async (req, res) => {
             return res.status(404).send("404: Not Found");
         }
         else{
-            if(linetemp[0].companyId != req.loggedUserId){
+            if(linetemp[0].companyId != req.body.companyId){
                 return res.status(403).send("Prohibited access");
             }
         }
@@ -157,14 +158,14 @@ module.exports.changeLine = async (req, res) => {
     } else {
         line.path.forEach(async x => {
             //idBusStop validation
-            if(!x.idBusStop || typeof x.idBusStop != 'string'){
+            if(!x.busStopId || typeof x.busStopId != 'string'){
                 validField = false;
-                ResponseError.fieldsErrors.push(new FieldErr('idBusStop', 'the field "idBusStop" must be a non-empty string'));
+                ResponseError.fieldsErrors.push(new FieldErr('busStopId', 'the field "busStopId" must be a non-empty string'));
             } else {
                 // Check if the ID of the bus stop exists
-                if ((await db.busStops.findBy({_id : x.idBusStop})).length == 0) {
+                if ((await db.busStops.findBy({_id : x.busStopId})).length == 0) {
                     validField = false;
-                    ResponseError.fieldsErrors.push(new FieldErr('idBusStop', `the bus stop with ID ${x.idBusStop} does not exist`));
+                    ResponseError.fieldsErrors.push(new FieldErr('busStopId', `the bus stop with ID ${x.busStopId} does not exist`));
                 }
             }
             //number validation
