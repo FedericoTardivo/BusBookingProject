@@ -470,8 +470,7 @@
         description: Elimina il biglietto tramite id, Riservato all'utente che ha prenotato il biglietto.
         parameters:
         - in: path
-          name:
-            -id
+          name: id
           required: true
           schema:
             type: string
