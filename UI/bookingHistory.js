@@ -85,7 +85,7 @@ function loadLines(){
     })
         .done((result) => {
 
-            lines = result.map(l => {return {id: l._id, name: l.name}})
+            lines = result.map(l => {return {id: l.id, name: l.name}})
             loadBusStops();
 
         })

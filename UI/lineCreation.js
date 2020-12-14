@@ -9,7 +9,7 @@ function refreshLinesTable() {
             var table = $("#LinesTable tbody");
             table.empty();
             $.each(result, (index, line) => {
-               table.append(`<tr><td>${line._id}</td><td>${line.name}</td></tr>`)
+               table.append(`<tr><td>${line.id}</td><td>${line.name}</td></tr>`)
             });
         })
         .fail((jqXHR, textStatus, errorThrown) => {

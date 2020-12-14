@@ -27,7 +27,7 @@ function refreshLinesTable() {
             var table = $("#linesTable tbody");
             table.empty();
             $.each(result, (index, line) => {
-                table.append(`<tr id=${line._id}><td onclick='refreshStopsTable("${line._id}","${line.name}");'>${line.name}</td></tr>`)
+                table.append(`<tr id=${line.id}><td onclick='refreshStopsTable("${line.id}","${line.name}");'>${line.name}</td></tr>`)
             });
         })
         .fail((jqXHR, textStatus, errorThrown) => {
@@ -78,7 +78,7 @@ function refreshStopsTable(lineId,lineName) {
 function refreshStartStopTable(lineId){
     var table = $("#startStopTable tbody");
         table.empty();
-        path=(lines.find(x => x._id==lineId)).path;
+        path=(lines.find(x => x.id==lineId)).path;
         //console.log(path);
         $.each(path, (index,elem) => {
             let name=busStops.find(busStop => busStop.id==elem.busStopId).name;
@@ -89,7 +89,7 @@ function refreshStartStopTable(lineId){
 function refreshEndStopTable(lineId){
     var table = $("#endStopTable tbody");
         table.empty();
-        path=(lines.find(x => x._id==lineId)).path;
+        path=(lines.find(x => x.id==lineId)).path;
         $.each(path, (index,elem) => {
             let name=busStops.find(busStop => busStop.id==elem.busStopId).name;
             table.append(`<tr id="stop${elem.busStopId}"><td onclick='setArrival("${elem.busStopId}","${name}");'>${name}</td></tr>`);

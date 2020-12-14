@@ -1,16 +1,16 @@
 const express = require('express');
 
-//IMPORTANT: all routes in this file already start with /Lines
-
 const {insertLine,changeLine,getLines} = require('../controllers/lines.js');
-
-
 
 const router = express.Router();
 
-// this post allows insertion of new Lines in the db
-router.post('/', insertLine);
-router.put('/', changeLine);
+// GET: get all the lines
 router.get('/', getLines)
+
+// POST: create a new line in the DB
+router.post('/', insertLine);
+
+// PUT: apply changes to a line
+router.put('/:id', changeLine);
 
 module.exports = router;
