@@ -10,13 +10,13 @@ router.get('/', getBusStops);
 // GET: get the specified bus stop
 router.get('/:id', getBusStop);
 
-// POST: Create a new bus stop
+// POST: create a new bus stop
 router.post('/', insertBusStop);
 
-// PUT: Update a bus stop
+// PUT: update a bus stop
 router.put('/:id', updateBusStop);
 
-// DELETE: Delete a bus stop
+// DELETE: delete a bus stop
 router.delete('/:id', deleteBusStop);
 
 module.exports = router;

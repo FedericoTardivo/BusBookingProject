@@ -7,10 +7,19 @@ const FieldErr = require('../models/FieldError.js');
 module.exports.getLines = async (req,res) => {
     var lines;
     if(req.query.companyId){
-    lines = await db.lines.findBy({companyId : req.query.companyId});
+        lines = await db.lines.findBy({companyId : req.query.companyId});
     }else{
-    lines = await db.lines.get();
+        lines = await db.lines.get();
     }
+    lines = lines.map(l => {
+        return {
+            self: `/api/v1/lines/${l._id}`,
+            id: l._id,
+            name: l.name,
+            capacity: l.capacity,
+            path: l.path
+        };
+    })
     return res.status(200).json(lines);
 };
 
@@ -104,8 +113,13 @@ module.exports.insertLine = async (req, res) => {
     //if, instead, the request is valid
     line._id = await db.lines.insert(line);
     
-    line.self = `/api/v1/lines/${line._id}`;
-    res.location(`/api/v1/lines/${line._id}`).status(201).json(line);
+    res.location(`/api/v1/lines/${line._id}`).status(201).json({
+        self: `/api/v1/lines/${line._id}`,
+        id: line._id,
+        name: line.name,
+        capacity: line.capacity,
+        path: line.path
+    });
 }
 
 module.exports.changeLine = async (req, res) => {
@@ -199,12 +213,17 @@ module.exports.changeLine = async (req, res) => {
 
     //if one of the fields are not valid, this sends a BadRequest error
     if (!validField){
-        ResponseError.message = 'Unvalid Request.';
+        ResponseError.message = 'Invalid Request.';
         return res.status(400).json(ResponseError);
     }
     
     //if, instead, the request is valid
     await db.lines.update(line);
-    line.self = `/api/v1/lines/${line._id}`;
-    res.status(200).json(line);
+    res.status(200).json({
+        self: `/api/v1/lines/${line._id}`,
+        id: line._id,
+        name: line.name,
+        capacity: line.capacity,
+        path: line.path
+    });
 }

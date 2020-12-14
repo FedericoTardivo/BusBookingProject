@@ -11,6 +11,10 @@ module.exports.getBusStops = async (req, res) => {
     if (req.query.companyId) {
         // ...get all the bus stops of that company
         stops = await db.busStops.findBy({companyId: req.query.companyId});
+    }else if (req.query.adminId) {
+        // ...get all the bus stops of the company of the logged user
+        let companyId = (await db.admins.findBy({_id: req.query.adminId}))[0]?.companyId;
+        stops = await db.busStops.findBy({companyId: companyId});
     }else{
         // Get all the bus stops from the DB
         stops = await db.busStops.get();
@@ -84,14 +88,14 @@ module.exports.insertBusStop = async (req, res) => {
     // If the name of the bus stop already exists for the same company...
     if((await db.busStops.findBy({name: busStop.name, companyId: busStop.companyId})).length > 0) {
         // ...send a 409Conflit error response
-        return res.status(409).send("Fermata già registrata");
+        return res.status(409).send(`La fermata "${busStop.name}" è già registrata`);
     }
     
     // All is OK, add the bus stop
     busStop._id = await db.busStops.insert(busStop);
     
     // Send the response with the correct "Location" header
-    res.location(`/api/v1/busStops/${busStop._id}`).status(201).json({
+    return res.location(`/api/v1/busStops/${busStop._id}`).status(201).json({
         self: `/api/v1/busStops/${busStop._id}`,
         id: busStop._id,
         name: busStop.name
@@ -147,7 +151,7 @@ module.exports.updateBusStop = async (req, res) => {
     // If the new name of the bus stop already exists in the same company...
     if((await db.busStops.findBy({name: busStop.name, companyId: busStop.companyId})).length > 0) {
         // ...send a 409Conflict error response
-        return res.status(409).send("Nome della fermata già registrato");
+        return res.status(409).send(`La femrata "${busStop.name}" è già registrata`);
     }
     
     // All is OK, update the bus stop

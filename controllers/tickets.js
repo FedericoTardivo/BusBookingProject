@@ -17,7 +17,7 @@ module.exports.insertTicket=async (req,res)=>{
     ticket.endBusStopId=req.body.endBusStopId;
     ticket.startTime = new Date(req.body.startTime);
     ticket.arrivalTime = new Date(req.body.arrivalTime);
-    ticket.issueDate = new Date(ticket.issueDate);
+    ticket.issueDate = new Date(ticket.issueDate); 
 
     let valid=true;
     let errResp=new BadRequestResponse();
@@ -28,13 +28,13 @@ module.exports.insertTicket=async (req,res)=>{
         errResp.fieldsErrors.push(new FieldError('lineId','The filed "lineId" must be a non empty string'));
     }
 
-    //validate startStopId
+    //validate startBusStopId
     if(!ticket.startBusStopId || typeof ticket.startBusStopId != 'string'){
         valid=false;
         errResp.fieldsErrors.push(new FieldError('startBusStopId','The field "startBusStopId" must be a non empty string'));
     }
 
-    //validate endStopId
+    //validate endbusStopId
     if(!ticket.endBusStopId || typeof ticket.endBusStopId != 'string'){
         valid=false;
         errResp.fieldsErrors.push(new FieldError('endBusStopId','The field "endBusStopId" must be a non empty string'));
@@ -61,10 +61,7 @@ module.exports.insertTicket=async (req,res)=>{
     //check if ticket is already bought
     if((await db.tickets.findBy({userId: ticket.userId, lineId: ticket.lineId, startBusStopId: ticket.startBusStopId, endBusStopId: ticket.endBusStopId, startTime: ticket.startTime, arrivalTime: ticket.arrivalTime})).length>0)
     {
-        return res.status(409).json({
-            fieldName: "ticket",
-            fieldMessage: `Questo biglietto è già stato acquistato da questo userId`
-          });
+        return res.status(409).json({message: `Questo biglietto è già stato acquistato da questo userId`});
     }
 
     //The request is valid
@@ -140,8 +137,47 @@ module.exports.insertTicket=async (req,res)=>{
     //create id for ticket
     const id = await db.tickets.insert(ticket);
 
-    //response e console log
-    res.location("/api/v1/tickets/" + id).status(201).json(ticket);
+    //response
+    res.status(201).json({
+        id: id,
+        issueDate: ticket.issueDate,
+        userId: ticket.userId,
+        lineId: ticket.lineId,
+        startBusStopId: ticket.startBusStopId,
+        endBusStopId: ticket.endBusStopId,
+        startTime: ticket.startTime,
+        arrivalTime: ticket.arrivalTime,
+    });
+};
+
+//Delete a tiket for a user by id
+module.exports.deleteTicket=async (req,res)=>{
+    
+    //check if the user is authenticated
+    if(!req.loggedUserId){
+        return res.status(401).send("Utente non autenticato.");
+    }
+
+    //reqeust of the tickets by db
+    const tickDB = (await db.tickets.findBy({_id: req.params.id}))[0];
+
+    //if ticket not exist
+    if(!tickDB){
+        return res.status(404).send(`Il biglietto con ID '${req.params.id}' non esiste.`)
+    }
+    
+    //check if the user who wants delete the tickets is the user who took that
+    const userTicket = req.loggedUserId;
+    if(tickDB.userId!=userTicket){
+        return res.status(403).send("Accesso non autorizzato.");
+    }
+
+    //try to delete the tiket
+    if (await db.tickets.delete(tickDB._id)){
+        return res.status(204).send();
+    } else {
+        return res.status(500).send();
+    }
 };
 
 // time => "12:00"

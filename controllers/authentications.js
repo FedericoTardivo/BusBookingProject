@@ -38,8 +38,7 @@ module.exports.authenticationUser = async (req, res) => {
     if (tempAdmin.length > 0) {    //significa che l'utente che sta per accedere è un admin
         //check if the entered password matches
 		if (user.password != tempAdmin[0].password){
-			errResp.message = 'Password errata per admin'
-            return res.status(401).json(errResp);
+			return res.status(401).json({message: 'Password errata per admin'});
         } else {
             //request is valid and the admin can log, return ID admin
             return res.status(200).json({
@@ -58,8 +57,7 @@ module.exports.authenticationUser = async (req, res) => {
 	} else {
 		//check if the entered password matches
 		if (user.password != tempUser[0].password){
-			errResp.message = 'Password errata per user'
-			return res.status(401).json(errResp);
+			return res.status(401).json({message: 'Password errata per user'});
 		} else {
 			//request is valid, return ID user
 			return res.status(200).json({

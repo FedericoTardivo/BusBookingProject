@@ -26,18 +26,18 @@ function refreshBusStopsTable() {
 
     // Load the busStops and show them in the table
     $.ajax({
-        url: "/api/v1/busStops?" + $.param({userId})
+        url: "/api/v1/busStops?" + $.param({adminId: userId, userId})
     })
         .done((result) => {
             var table = $("#busStopsTable tbody");
             table.empty();
             $.each(result, (index, bs) => {
                 table.append(`<tr>
-                                <td>${bs._id}</td>
-                                <td id="${bs._id}_name">${bs.name}</td>
+                                <td>${bs.id}</td>
+                                <td id="${bs.id}_name">${bs.name}</td>
                                 <td>
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal" data-id="${bs._id}" data-name="${bs.name}"><i class="fas fa-pen"></i></button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteBusStop('${bs._id}')"><i class="fas fa-trash-alt"></i></button>
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal" data-id="${bs.id}" data-name="${bs.name}"><i class="fas fa-pen"></i></button>
+                                    <button type="button" class="btn btn-danger" onclick="deleteBusStop('${bs.id}')"><i class="fas fa-trash-alt"></i></button>
                                 </td>
                             </tr>`);
             });

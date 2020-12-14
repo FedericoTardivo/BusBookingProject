@@ -17,6 +17,11 @@
           schema:
             type: string
           description: ID della compagnia di trasporti di cui ottenere le fermate
+        - in: query
+          name: adminId
+          schema:
+            type: string
+          description: ID dell'amministratore che appartiene alla compagnia di trasporti di cui ottenere le fermate. Se è definito "companyId" questo parametro è ignorato
         responses:
           '200':
             description: Richiesta avvenuta con successo
@@ -37,7 +42,7 @@
         requestBody:
           required: true
           content:
-            application/json:
+            text/plain:
               schema:
                 type: object
                 required:
@@ -74,12 +79,10 @@
           '409':
             description: Fermata già registrata
             content:
-              application/json:
+              text/plain:
                 schema:
-                  $ref: '#/components/schemas/FieldError'
-                example:
-                  fieldName: name
-                  fieldMessage: La fermata "Piazza Dante" è già registrata
+                  type: string
+                  example: La fermata "Piazza Dante" è già registrata.
     
     /busStops/{id}:
       get:
@@ -169,12 +172,10 @@
           '409':
             description: Fermata già registrata
             content:
-              application/json:
+              text/plain:
                 schema:
-                  $ref: '#/components/schemas/FieldError'
-                example:
-                  fieldName: name
-                  fieldMessage: La fermata "Piazza Dante" è già registrata
+                  type: string
+                  example: La fermata "Piazza Dante" è già registrata
           
       delete:
         description: Elimina la fermata dell'autobus specificata
@@ -206,17 +207,17 @@
 
     /lines:
       get:
-        description: Restituisce la lista delle linee del servizio di trasporti specificato
+        description: Restituisce la lista delle linee di tutti i servizi di trasposto
         parameters:
           - name: companyId
-            required: true
             in: query
-            description: ID della compagnia di trasporti per la quale si vogliono ottenere le linee
+            description: ID della compagnia di trasporti di cui si vogliono ottenere le linee
             schema:
-              type: integer
+              type: string
+              format: uuid
         responses:
           '200':
-            description: Successful response
+            description: Richiesta eseguita con successo
             content:
               application/json:
                 schema:
@@ -238,7 +239,12 @@
             content: 
               application/json:
                 schema:
-                  $ref: '#/components/schemas/LineSelf' 
+                  $ref: '#/components/schemas/LineSelf'
+            headers:
+              Location:
+                schema:
+                  type: string
+                description: Link per ottenere la linea appena creata
   
           '400':
             $ref: '#/components/responses/400BadRequest'
@@ -252,8 +258,18 @@
               application/json:
                 schema:
                   $ref: '#/components/schemas/LineError'
+
+    /lines/{id}:
       put:
-        description: Crea una nuova linea
+        description: Modifica una linea già esistente
+        parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID della linea da modificare
         requestBody:
           required: true
           content:
@@ -266,8 +282,8 @@
                         type: string
                   - $ref: '#/components/schemas/Line'
         responses:
-          '201':
-            description: Linea inserita correttamente
+          '200':
+            description: Linea aggiornata correttamente
             content: 
               application/json:
                 schema:
@@ -331,34 +347,6 @@
                 example:
                   fieldName: email
                   fieldMessage: L'email "mario.rossi@domain.com" è già registrata
-
-    /authentication:
-      post:
-        description: Esegue il login differenziando User "normali" ed Admin
-        requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-               allOf:
-                - $ref: '#/components/schemas/AuthenticationUser'
-                - type: object
-          
-        responses:
-          '200':
-            description: Account loggato con successo
-            content:
-              application/json:
-                schema:
-                  type: object
-                  items:
-                    $ref: '#/components/schemas/AuthenticationUser'
-            
-          '400':
-            $ref: '#/components/responses/400BadRequest'
-
-          '401':
-            $ref: '#/components/responses/401Unauthorized'
 
     /users/{id}/tickets:
       get:
@@ -426,6 +414,47 @@
             
           '403':
             $ref: '#/components/responses/403Forbidden'
+    
+    /authentication:
+      post:
+        description: Esegue il login differenziando User "normali" ed Admin
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationUser'
+          
+        responses:
+          '200':
+            description: Account loggato con successo
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                      description: The ID of the logged user
+                    type:
+                      type: string
+                      description: \"user" if the logged user is a normal user, "admin" if the logged user is an admin
+                      example: admin
+
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+
+          '401':
+            description: Credenziali non valide.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: Credenziali non valide.
 
     /tickets:
       post:
@@ -435,9 +464,30 @@
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/Ticket'
-                  - type: object
+                type: object
+                required:
+                  - lineId
+                  - startBusStopId
+                  - endBusStopId
+                  - startTime
+                  - arrivalTime
+                properties:
+                  lineId:
+                    type : string 
+                    example: ghdf-4fq4fqrf-dgref34
+                  startBusStopId:
+                    type :  string
+                    example: dfdhf8df6d-dfdf76dfdf-3433fedf
+                  endBusStopId:
+                    type : string
+                    example: dfdhf8df6d-dfdf76dfdf-3433fedf 
+                  startTime:
+                    type : string
+                    format: date
+                    example: 2020-12-14T10:00:00.000+00:00
+                  arrivalTime:
+                    type : string
+                    example: 2020-12-14T10:51:00.000+00:00
                     
         responses:
           '201':
@@ -450,15 +500,49 @@
           '400':
             $ref: '#/components/responses/400BadRequest'
 
+          '401':
+            $ref: '#/components/responses/401Unauthorized'
+
           '409':
             description: Biglietto non acquistabile
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/FieldError'
-                example:
-                  fieldName: ticket
-                  fieldMessage: Questo biglietto è già stato acquistato da questo utente
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: Questo biglietto è già stato acquistato da questo utente
+
+    /tickets/{id}:
+      delete:
+        description: Elimina il biglietto tramite id, Riservato all'utente che ha prenotato il biglietto.
+        parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID del biglietto da eliminare
+          
+        responses:
+          '204':
+            description: Biglietto eliminato con successo.
+
+          '403':
+            $ref: '#/components/responses/403Forbidden'
+
+          '401':
+            $ref: '#/components/responses/401Unauthorized'
+
+          '404':
+            description: L'ID per cui è richiesta l'eliminazione non esiste.
+            content:
+              text/plain:
+                schema:
+                  type: string
+                  example: Il biglietto con ID '223a44ba-2222-111a-111a-999a999a999aa' non esiste.
 
   components:
     # Data models
@@ -468,6 +552,7 @@
         properties:
           self:
             type: string
+            description: Link per raggiungere la risorsa
             example: /api/v1/object/8452
       
       # Autentication credentials
@@ -505,6 +590,7 @@
       Ticket:
         type: object
         required:
+          - id
           - issueDate
           - userId
           - lineId
@@ -513,28 +599,35 @@
           - startTime
           - arrivalTime
         properties:
+          id:
+            type: string
+            format: uuid
           issueDate:
             type: string
             format: date
-            example: "2020-12-31"
+            example: "2020-12-14T10:51:36.000+00:00"
           userId:
             type: string
+            format: uuid
             example: 67676fd-fdhfd6fdd-7f8d6fs
           lineId:
             type : string 
+            format: uuid
             example: ghdf-4fq4fqrf-dgref34
           startBusStopId:
             type :  string
+            format: uuid
             example: dfdhf8df6d-dfdf76dfdf-3433fedf
           endBusStopId:
             type : string
+            format: uuid
             example: dfdhf8df6d-dfdf76dfdf-3433fedf 
-          orarioPartenza:
+          startTime:
             type : string
-            example: 14,30
-          orarioArrivo:
+            example: 2020-12-14T10:51:00.000+00:00
+          arrivalTime:
             type : string
-            example: 14,35 
+            example: 2020-12-14T10:51:00.000+00:00
 
       UserSelf:
         type: object
@@ -545,10 +638,14 @@
       Line:
         type: object
         required:
+          - id
           - name
           - capacity
           - path
         properties:
+          id:
+            type: string
+            format: uuid
           name:
             type: string
           capacity: 
@@ -569,13 +666,15 @@
         properties:
           id:
             type: string
+            description: ID della fermata
           name:
             type: string
+            description: Nome della fermata
 
       BusStopAdd:
         type: object
         properties:
-          idBusStop:
+          busStopId:
             type: string
           number:
             type: integer
@@ -595,15 +694,15 @@
       LineError:
         type: object
         properties:
-          FieldName:
+          fieldName:
             type: string
             description: "Nome del campo che ha generato l'errore"
-          FieldErrorMessage:
+          fieldErrorMessage:
             type: string
             description: "Errore specifico del campo"        
         required:
-          - FieldName
-          - FieldErrorMessage
+          - fieldName
+          - fieldErrorMessage
         
       # An error message relative to a field
       FieldError:
