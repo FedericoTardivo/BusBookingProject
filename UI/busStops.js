@@ -26,7 +26,7 @@ function refreshBusStopsTable() {
 
     // Load the busStops and show them in the table
     $.ajax({
-        url: "/api/v1/busStops?" + $.param({userId})
+        url: "/api/v1/busStops?" + $.param({adminId: userId, userId})
     })
         .done((result) => {
             var table = $("#busStopsTable tbody");
