@@ -17,6 +17,11 @@
           schema:
             type: string
           description: ID della compagnia di trasporti di cui ottenere le fermate
+        - in: query
+          name: adminId
+          schema:
+            type: string
+          description: ID dell'amministratore che appartiene alla compagnia di trasporti di cui ottenere le fermate. Se è definito "companyId" questo parametro è ignorato
         responses:
           '200':
             description: Richiesta avvenuta con successo

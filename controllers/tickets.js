@@ -17,7 +17,8 @@ module.exports.insertTicket=async (req,res)=>{
     ticket.endBusStopId=req.body.endBusStopId;
     ticket.startTime = new Date(req.body.startTime);
     ticket.arrivalTime = new Date(req.body.arrivalTime);
-    
+    ticket.issueDate = new Date(ticket.issueDate); 
+
     let valid=true;
     let errResp=new BadRequestResponse();
 
@@ -83,7 +84,7 @@ module.exports.insertTicket=async (req,res)=>{
     tickets = tickets.map(t => {
         return {
             _id: t._id,
-            issueDate: t.issueDate,
+            issueDate: new Date(t.issueDate),
             userId: t.userId,
             lineId: t.lineId,
             startBusStopId: t.startBusStopId,

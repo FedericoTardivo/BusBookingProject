@@ -11,6 +11,10 @@ module.exports.getBusStops = async (req, res) => {
     if (req.query.companyId) {
         // ...get all the bus stops of that company
         stops = await db.busStops.findBy({companyId: req.query.companyId});
+    }else if (req.query.adminId) {
+            // ...get all the bus stops of the company of the logged user
+            let companyId = (await db.admins.findBy({_id: req.query.adminId}))[0]?.companyId;
+            stops = await db.busStops.findBy({companyId: companyId});
     }else{
         // Get all the bus stops from the DB
         stops = await db.busStops.get();
