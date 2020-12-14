@@ -269,3 +269,35 @@ describe('Test API - Line insertion', () =>{
     });
     
 });
+
+describe('Test API - Lines Modification',() => {
+  beforeAll(async () => {
+    await db.lines.insert(
+      {
+        _id: "id_di_prova_per_modifica_linea",
+        companyId: "id_compagnia_di_prova",
+        name: "Linea di prova per modifica",
+        capacity: "4",
+        path: [{"busStopId":"b6a6cb98-6341-48ff-b220-3513dffdded7","number":1,"times":[{"time":"12:00","accessibility":false}]}]
+      }
+    );
+    await db.admins.insert({
+        _id: "id_admin",
+        companyId: "id_compagnia_di_prova",
+        email: "admin@example.com",
+        password: "password"
+    });
+  });
+
+  afterAll(async () => {
+    await db.lines.clear();
+    await db.admins.clear();
+  });
+  
+  it("Put request with user not logged should return 401", async () => {
+    const response = await request(app).put(`/api/v1/lines`).query({userId: "id_admin"});
+    expect(response.status).toBe(401);
+    expect(response.text).toBe("Utente non autenticato.");
+  });
+
+});

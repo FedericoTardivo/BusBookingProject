@@ -114,7 +114,10 @@ module.exports.changeLine = async (req, res) => {
     }
     const line = new Line();
     // Set the owner of the line as the logged user
+    console.log(req.loggedUserId);
+    
     const userCompanyId = (await db.admins.findBy({_id: req.loggedUserId}))[0].companyId;
+    
     line.companyId = userCompanyId;
     line._id = req.body._id;
     line.name = req.body.name;
