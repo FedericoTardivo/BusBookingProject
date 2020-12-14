@@ -78,12 +78,18 @@
                         linea aggiunta con successo!
                     </div>
                     <form>
-                        <label for="name">Nome Linea</label>
-                        <input type="text" class="form-control" id="name" required>
-                        <label for="capacity">Posti Disponibili</label>
-                        <input type="number" class="form-control" id="capacity"  min = "1" required>
-
-                        <div class="form-group" id="StopsContainer"></div>
+                        <div class="form-group">
+                            <label for="name">Nome Linea</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="capacity">Posti Disponibili</label>
+                            <input type="number" class="form-control" id="capacity"  min="1" value="15" required>
+                        </div>
+                        
+                        <small class="form-text text-muted">Per ogni fermata inserisci gli orari separati da una virgola.<br>Es: 10:00,10:05,10:10</small>
+                        <div id="StopsContainer">
+                        </div>
                         <button class="btn btn-primary" type="button" onclick="addBusStoptoLine()">Aggiungi fermata alla linea</button>
                         <button class="btn btn-primary" type="button" onclick="addLine()">Aggiungi linea</button>
                     </form>

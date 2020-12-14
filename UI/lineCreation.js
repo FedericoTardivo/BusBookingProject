@@ -38,8 +38,11 @@ function addBusStoptoLine(){
     
     var Stopdiv = document.createElement("div");
     Stopdiv.classList.add("busstop");
+    Stopdiv.classList.add("row");
+    Stopdiv.classList.add("form-group");
     var newselect= document.createElement("select");
-    newselect.id = "StopList"
+    newselect.classList.add("form-control");
+    newselect.classList.add("col-4");
     
     BusStops.forEach(option =>
         newselect.options.add(
@@ -47,8 +50,9 @@ function addBusStoptoLine(){
         ));
     var newinput = document.createElement("input");
     newinput.type = "text";
- //   newinput.class = "form-control";
- //   newinput.id = "idBusStop";
+    newinput.classList.add("form-control");
+    newinput.classList.add("col-8");
+
     Stopdiv.appendChild(newselect);
     Stopdiv.appendChild(newinput);
     document.getElementById("StopsContainer").appendChild(Stopdiv);
@@ -89,6 +93,7 @@ function addLine() {
     })
         .done((result) => {
             $("#formAlertSuccess").show();
+            $("#StopsContainer").empty();
         })
         .fail((jqXHR, textStatus, errorThrown) => {
             $("#formErrMsg").text(`Risposta del server [${jqXHR.status} - ${errorThrown}]: ${jqXHR.responseText}`);
