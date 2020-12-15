@@ -275,27 +275,29 @@ describe('Test API - Lines Modification',() => {
   var tempAdminId;
   var tempCompanyId;
   beforeAll(async () => {
-    console.log("inserting data");
+    //console.log("inserting data");
     tempCompanyId = await db.companies.insert({
       name : "compagniaDiProva"
     });
+    //console.log(tempCompanyId);
     tempLineId=await db.lines.insert(
       {
         companyId: tempCompanyId,
         name: "Linea di prova per modifica",
         capacity: "4",
         path: [{"busStopId":"b6a6cb98-6341-48ff-b220-3513dffdded7","number":1,"times":[{"time":"12:00","accessibility":false}]}]
-      }
-    );
+      });
+    //console.log(tempLineId);
     tempAdminId=await db.admins.insert({
         companyId: tempCompanyId,
         email: "admin@example.com",
         password: "password"
     });
+    //console.log(tempAdminId);
   });
 
   afterAll(async () => {
-    console.log("removing data");
+    //console.log("removing data");
     await db.lines.clear();
     await db.admins.clear();
     await db.companies.clear();
