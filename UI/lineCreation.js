@@ -1,4 +1,5 @@
 let BusStops = [];
+const userId = sessionStorage.getItem("LoggedUserID");
 
 function refreshLinesTable() {
     // Load the Lines and show them in the table
@@ -85,7 +86,7 @@ function addLine() {
  
 
     $.ajax({
-        url: "/api/v1/lines?" + $.param({userId: "5fd2481e7dea2df47325ef71"}),
+        url: "/api/v1/lines?" + $.param({userId}),
         type: "POST",
         data: JSON.stringify(line),
         contentType: "application/json",
