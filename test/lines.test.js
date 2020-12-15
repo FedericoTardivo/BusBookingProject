@@ -275,6 +275,7 @@ describe('Test API - Lines Modification',() => {
   var tempAdminId;
   var tempCompanyId;
   beforeAll(async () => {
+    console.log("inserting data");
     tempCompanyId = await db.companies.insert({
       name : "compagniaDiProva"
     });
@@ -294,6 +295,7 @@ describe('Test API - Lines Modification',() => {
   });
 
   afterAll(async () => {
+    console.log("removing data");
     await db.lines.clear();
     await db.admins.clear();
     await db.companies.clear();

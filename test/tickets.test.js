@@ -339,7 +339,7 @@ describe('Test API - Tickets endpoint', () => {
             arrivalTime: ticket1.arrivalTime
         });
         
-        console.log(response.body);
+        //console.log(response.body);
 
         expect(response.status).toBe(409);
         expect(response.body).toHaveProperty("message");

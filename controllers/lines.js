@@ -127,9 +127,12 @@ module.exports.changeLine = async (req, res) => {
         return res.status(401).send("Utente non autenticato.")
     };
     const line = new Line();
-    // Set the owner of the line as the logged user
-    //console.log(req.loggedUserId);
-    const userCompanyId = (await db.admins.findBy({_id: req.loggedUserId}))[0].companyId;
+    console.log(req.loggedUserId);
+    var thisAdmin = await db.admins.findBy({_id: req.loggedUserId});
+    if(!thisAdmin){
+        return res.status(404).send("404: Not Found");
+    }
+    const userCompanyId = thisAdmin[0].companyId;
     line.companyId = userCompanyId;
     line._id = req.params.id;
     line.name = req.body.name;
