@@ -7,10 +7,19 @@ const FieldErr = require('../models/FieldError.js');
 module.exports.getLines = async (req,res) => {
     var lines;
     if(req.query.companyId){
-    lines = await db.lines.findBy({companyId : req.query.companyId});
+        lines = await db.lines.findBy({companyId : req.query.companyId});
     }else{
-    lines = await db.lines.get();
+        lines = await db.lines.get();
     }
+    lines = lines.map(l => {
+        return {
+            self: `/api/v1/lines/${l._id}`,
+            id: l._id,
+            name: l.name,
+            capacity: l.capacity,
+            path: l.path
+        };
+    })
     return res.status(200).json(lines);
 };
 
@@ -104,20 +113,31 @@ module.exports.insertLine = async (req, res) => {
     //if, instead, the request is valid
     line._id = await db.lines.insert(line);
     
-    line.self = `/api/v1/lines/${line._id}`;
-    res.location(`/api/v1/lines/${line._id}`).status(201).json(line);
+    res.location(`/api/v1/lines/${line._id}`).status(201).json({
+        self: `/api/v1/lines/${line._id}`,
+        id: line._id,
+        name: line.name,
+        capacity: line.capacity,
+        path: line.path
+    });
 }
 
 module.exports.changeLine = async (req, res) => {
     if(!req.loggedUserId){
         return res.status(401).send("Utente non autenticato.")
-    }
+    };
     const line = new Line();
-    // Set the owner of the line as the logged user
-    line.adminId = req.loggedUserId;
-    line._id = req.body.id;
+    //console.log(req.loggedUserId);
+    var thisAdmin = await db.admins.findBy({_id: req.loggedUserId});
+    if(thisAdmin.length==0){
+        return res.status(404).send("404: Not Found");
+    }
+    const userCompanyId = thisAdmin[0].companyId;
+    line.companyId = userCompanyId;
+    line._id = req.params.id;
     line.name = req.body.name;
     line.path = req.body.path;
+    line.capacity = req.body.capacity;
 
     let validField = true;
     let ResponseError = new BadRequestResponse();
@@ -134,10 +154,15 @@ module.exports.changeLine = async (req, res) => {
             return res.status(404).send("404: Not Found");
         }
         else{
-            if(linetemp[0].adminId != req.loggedUserId){
+            if(linetemp[0].companyId != req.body.companyId){
                 return res.status(403).send("Prohibited access");
             }
         }
+    }
+    //capacity validation
+    if(line.capacity == undefined || line.capacity < 1){
+        validField = false;
+        ResponseError.fieldsErrors.push(new FieldErr('capacity', 'the field "capacity" must be a positive number'));
     }
     //name validation
     if(!line.name || typeof line.name != 'string'){
@@ -151,14 +176,14 @@ module.exports.changeLine = async (req, res) => {
     } else {
         line.path.forEach(async x => {
             //idBusStop validation
-            if(!x.idBusStop || typeof x.idBusStop != 'string'){
+            if(!x.busStopId || typeof x.busStopId != 'string'){
                 validField = false;
-                ResponseError.fieldsErrors.push(new FieldErr('idBusStop', 'the field "idBusStop" must be a non-empty string'));
+                ResponseError.fieldsErrors.push(new FieldErr('busStopId', 'the field "busStopId" must be a non-empty string'));
             } else {
                 // Check if the ID of the bus stop exists
-                if ((await db.busStops.findBy({_id : x.idBusStop})).length == 0) {
+                if ((await db.busStops.findBy({_id : x.busStopId})).length == 0) {
                     validField = false;
-                    ResponseError.fieldsErrors.push(new FieldErr('idBusStop', `the bus stop with ID ${x.idBusStop} does not exist`));
+                    ResponseError.fieldsErrors.push(new FieldErr('busStopId', `the bus stop with ID ${x.busStopId} does not exist`));
                 }
             }
             //number validation
@@ -189,12 +214,17 @@ module.exports.changeLine = async (req, res) => {
 
     //if one of the fields are not valid, this sends a BadRequest error
     if (!validField){
-        ResponseError.message = 'Unvalid Request.';
+        ResponseError.message = 'Invalid Request.';
         return res.status(400).json(ResponseError);
     }
     
     //if, instead, the request is valid
     await db.lines.update(line);
-    line.self = `/api/v1/lines/${line._id}`;
-    res.status(200).json(line);
+    res.status(200).json({
+        self: `/api/v1/lines/${line._id}`,
+        id: line._id,
+        name: line.name,
+        capacity: line.capacity,
+        path: line.path
+    });
 }

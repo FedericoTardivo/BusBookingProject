@@ -62,17 +62,17 @@ module.exports.createUser = async (req, res) => {
     // The request is valid
 
     // Create an ID for the new user
-    const _id = await db.users.register(user);
+    const id = await db.users.register(user);
     
     let resObj = {
-        self: `/api/v1/users/${_id}`,
+        self: `/api/v1/users/${id}`,
         name: user.name,
         surname: user.surname,
         email: user.email
     };
 
     // Send back the newly created user
-    res.location("/api/v1/users/" + _id).status(201).json(resObj);
+    res.location("/api/v1/users/" + id).status(201).json(resObj);
 }
 
 module.exports.getTickets = async (req, res) => {
