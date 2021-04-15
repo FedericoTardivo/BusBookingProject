@@ -2,3 +2,765 @@
 Progetto per il corso di Ingegneria del Software 2 della laurea triennale in Informatica (UniTN)
 
 Travis CI status: [![Build Status](https://travis-ci.com/andry99unitn/IngSoft2-Project.svg?token=y4qyoJSvU8pddxcFzFXK&branch=main)](https://travis-ci.com/andry99unitn/IngSoft2-Project)
+
+openapi: 3.0.0
+  info:
+    version: 1.0.0
+    title: Bus booking API
+    description: API per interfacciarsi con il servizio di prenotazione degli autobus creato dal gruppo \#32 per il progetto di Ingegneria del Software 2 della laurea triennale in Informatica (UniTN)
+    
+  servers:
+    - url: https://busbooking-ingsoft2.herokuapp.com/api/v1
+
+  paths:
+    /busStops:
+      get:
+        description: Restituisce l'elenco delle fermate degli autobus
+        parameters:
+        - in: query
+          name: companyId
+          schema:
+            type: string
+          description: ID della compagnia di trasporti di cui ottenere le fermate
+        - in: query
+          name: adminId
+          schema:
+            type: string
+          description: ID dell'amministratore che appartiene alla compagnia di trasporti di cui ottenere le fermate. Se è definito "companyId" questo parametro è ignorato
+        responses:
+          '200':
+            description: Richiesta avvenuta con successo
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    allOf:
+                      - type: object
+                        properties:
+                          self:
+                            type: string
+                      - $ref: '#/components/schemas/BusStop'
+
+      post:
+        description: Crea una nuova fermata dell'autobus
+        requestBody:
+          required: true
+          content:
+            text/plain:
+              schema:
+                type: object
+                required:
+                  - name
+                properties:
+                  name:
+                    type: string
+                    example: "Piazza Dante"
+        responses:
+          '201':
+            description: Fermata creata con successo
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - type: object
+                      properties:
+                        self:
+                          type: string
+                          example: /api/v1/busStops/123456
+                    - $ref: '#/components/schemas/BusStop'
+            headers:
+              Location:
+                schema:
+                  type: string
+                description: Link per ottenere la fermata appena creata
+          
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+
+          '401':
+            $ref: '#/components/responses/401Unauthorized'
+            
+          '409':
+            description: Fermata già registrata
+            content:
+              text/plain:
+                schema:
+                  type: string
+                  example: La fermata "Piazza Dante" è già registrata.
+    
+    /busStops/{id}:
+      get:
+        description: Restituisce la fermata dell'autobus con l'ID specificato
+        parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID della fermata dell'autobus che si vuole ottenere
+        responses:
+          '200':
+            description: Richiesta avvenuta con successo
+            content:
+              application/json:
+                schema:
+                  type: object
+                  allOf:
+                    - type: object
+                      properties:
+                        self:
+                          type: string
+                    - $ref: '#/components/schemas/BusStop'
+          '400':
+            description: L'ID della fermata non esiste.
+            content:
+              text/plain:
+                schema:
+                  type: string
+                  example: La fermata con ID "abcd" non esiste.
+      
+      put:
+        description: Modifica una fermata dell'autobus già esistente
+        parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID della fermata da modificare
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - name
+                properties:
+                  name:
+                    type: string
+                    example: "Piazza Dante"
+        responses:
+          '200':
+            description: Fermata modificata con successo
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - type: object
+                      properties:
+                        self:
+                          type: string
+                          example: /api/v1/busStops/123456
+                    - $ref: '#/components/schemas/BusStop'
+          
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+
+          '401':
+            $ref: '#/components/responses/401Unauthorized'
+
+          '403':
+            $ref: '#/components/responses/403Forbidden'
+
+          '404':
+            description: L'ID della fermata specificata non esiste.
+            content:
+              text/plain:
+                schema:
+                  type: string
+                  example: La fermata con ID '68e1a073-8590-4f13-b0cb-f8d0a0e36972' non esiste.
+
+          '409':
+            description: Fermata già registrata
+            content:
+              text/plain:
+                schema:
+                  type: string
+                  example: La fermata "Piazza Dante" è già registrata
+          
+      delete:
+        description: Elimina la fermata dell'autobus specificata
+        parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID della fermata da eliminare
+        responses:
+          '204':
+            description: Fermata eliminata con successo.
+
+          '401':
+            $ref: '#/components/responses/401Unauthorized'
+
+          '403':
+            $ref: '#/components/responses/403Forbidden'
+
+          '404':
+            description: L'ID della fermata specificata non esiste.
+            content:
+              text/plain:
+                schema:
+                  type: string
+                  example: La fermata con ID '68e1a073-8590-4f13-b0cb-f8d0a0e36972' non esiste.
+
+    /lines:
+      get:
+        description: Restituisce la lista delle linee di tutti i servizi di trasposto
+        parameters:
+          - name: companyId
+            in: query
+            description: ID della compagnia di trasporti di cui si vogliono ottenere le linee
+            schema:
+              type: string
+              format: uuid
+        responses:
+          '200':
+            description: Richiesta eseguita con successo
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref:  "#/components/schemas/LineSelf"
+      
+      post:
+        description: Crea una nuova linea
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Line'
+        responses:
+          '201':
+            description: Linea inserita correttamente
+            content: 
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/LineSelf'
+            headers:
+              Location:
+                schema:
+                  type: string
+                description: Link per ottenere la linea appena creata
+  
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+          
+          '401':
+            $ref: '#/components/responses/401Unauthorized'
+
+          '409':
+            description: Linea già esistente
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/LineError'
+
+    /lines/{id}:
+      put:
+        description: Modifica una linea già esistente
+        parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID della linea da modificare
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      id:
+                        type: string
+                  - $ref: '#/components/schemas/Line'
+        responses:
+          '200':
+            description: Linea aggiornata correttamente
+            content: 
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/LineSelf' 
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+          '401':
+            $ref: '#/components/responses/401Unauthorized'
+          '403':
+            $ref: '#/components/responses/403Forbidden'
+          '409':
+            description: Linea già esistente
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/LineError'
+
+    /users:
+      post:
+        description: Crea un nuovo account passeggero
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/User'
+                  - type: object
+                    required:
+                      - password
+                      - confirmPassword
+                    properties:
+                      password:
+                        type: string
+                        example: "MySuperSecretPassword"
+                      confirmPassword:
+                        type: string
+                        example: "MySuperSecretPassword"
+        responses:
+          '201':
+            description: Account creato con successo
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/UserSelf'
+            headers:
+              Location:
+                schema:
+                  type: string
+                description: Link per ottenere l'account appena creato
+          
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+            
+          '409':
+            description: Email già registrata
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/FieldError'
+                example:
+                  fieldName: email
+                  fieldMessage: L'email "mario.rossi@domain.com" è già registrata
+
+    /users/{id}/tickets:
+      get:
+        description: Ottiene un elenco di tutti i biglietti acquistati dall'utente
+        parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID dell'utente
+        - in: query
+          name: offset
+          schema:
+            type: integer
+          description: Numero di biglietti da saltare prima di iniziare a raccogliere gli elementi. Usato per la paginazione dei risultati
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Numero di biglietti da restituire. Usato per la paginazione dei risultati
+        - in: query
+          name: issue_start
+          schema:
+            type: string
+            format: date
+          description: Data di inizio dell'intervallo ricercato per la data di emissione dei biglietti. Usato per il filtraggio dei dati
+        - in: query
+          name: issue_end
+          schema:
+            type: string
+            format: date
+          description: Data di fine dell'intervallo ricercato per la data di emissione dei biglietti. Usato per il filtraggio dei dati
+        - in: query
+          name: lineId
+          schema:
+            type: string
+          description: ID della linea dei biglietti da restituire. Usato per il filtraggio dei dati
+        - in: query
+          name: start_stop
+          schema:
+            type: string
+          description: Fermata di salita dei biglietti da restituire. Usato per il filtraggio dei dati
+        - in: query
+          name: end_stop
+          schema:
+            type: string
+          description: Fermata di discesa dei biglietti da restituire. Usato per il filtraggio dei dati
+        responses:
+          '200':
+            description: Richiesta avvenuta con successo
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Ticket'
+
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+
+          '401':
+            $ref: '#/components/responses/401Unauthorized'
+            
+          '403':
+            $ref: '#/components/responses/403Forbidden'
+    
+    /authentication:
+      post:
+        description: Esegue il login differenziando User "normali" ed Admin
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationUser'
+          
+        responses:
+          '200':
+            description: Account loggato con successo
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                      description: The ID of the logged user
+                    type:
+                      type: string
+                      description: \"user" if the logged user is a normal user, "admin" if the logged user is an admin
+                      example: admin
+
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+
+          '401':
+            description: Credenziali non valide.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: Credenziali non valide.
+
+    /tickets:
+      post:
+        description: Crea un nuovo biglietto
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - lineId
+                  - startBusStopId
+                  - endBusStopId
+                  - startTime
+                  - arrivalTime
+                properties:
+                  lineId:
+                    type : string 
+                    example: ghdf-4fq4fqrf-dgref34
+                  startBusStopId:
+                    type :  string
+                    example: dfdhf8df6d-dfdf76dfdf-3433fedf
+                  endBusStopId:
+                    type : string
+                    example: dfdhf8df6d-dfdf76dfdf-3433fedf 
+                  startTime:
+                    type : string
+                    format: date
+                    example: 2020-12-14T10:00:00.000+00:00
+                  arrivalTime:
+                    type : string
+                    example: 2020-12-14T10:51:00.000+00:00
+                    
+        responses:
+          '201':
+            description: Biglietto creato con successo
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Ticket'
+
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+
+          '401':
+            $ref: '#/components/responses/401Unauthorized'
+
+          '409':
+            description: Biglietto non acquistabile
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: Questo biglietto è già stato acquistato da questo utente
+
+    /tickets/{id}:
+      delete:
+        description: Elimina il biglietto tramite id, Riservato all'utente che ha prenotato il biglietto.
+        parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID del biglietto da eliminare
+          
+        responses:
+          '204':
+            description: Biglietto eliminato con successo.
+
+          '403':
+            $ref: '#/components/responses/403Forbidden'
+
+          '401':
+            $ref: '#/components/responses/401Unauthorized'
+
+          '404':
+            description: L'ID per cui è richiesta l'eliminazione non esiste.
+            content:
+              text/plain:
+                schema:
+                  type: string
+                  example: Il biglietto con ID '223a44ba-2222-111a-111a-999a999a999aa' non esiste.
+
+  components:
+    # Data models
+    schemas:
+      SelfObj:
+        type: object
+        properties:
+          self:
+            type: string
+            description: Link per raggiungere la risorsa
+            example: /api/v1/object/8452
+      
+      # Autentication credentials
+      AuthenticationUser:
+        type: object
+        required:
+          - email
+          - Password
+        properties:
+          email: 
+            type: string
+            example: mario.rossi@domain.com
+          password:
+            type: string
+            example: "MySecretSuperPassword"
+    
+      # Definition of User Type
+      User:
+        type: object
+        required:
+          - name
+          - surname
+          - email
+        properties:
+          name:
+            type: string
+            example: Mario
+          surname:
+            type: string
+            example: Rossi
+          email:
+            type: string
+            example: mario.rossi@domain.com
+
+      Ticket:
+        type: object
+        required:
+          - id
+          - issueDate
+          - userId
+          - lineId
+          - startBusStopId
+          - endBusStopId
+          - startTime
+          - arrivalTime
+        properties:
+          id:
+            type: string
+            format: uuid
+          issueDate:
+            type: string
+            format: date
+            example: "2020-12-14T10:51:36.000+00:00"
+          userId:
+            type: string
+            format: uuid
+            example: 67676fd-fdhfd6fdd-7f8d6fs
+          lineId:
+            type : string 
+            format: uuid
+            example: ghdf-4fq4fqrf-dgref34
+          startBusStopId:
+            type :  string
+            format: uuid
+            example: dfdhf8df6d-dfdf76dfdf-3433fedf
+          endBusStopId:
+            type : string
+            format: uuid
+            example: dfdhf8df6d-dfdf76dfdf-3433fedf 
+          startTime:
+            type : string
+            example: 2020-12-14T10:51:00.000+00:00
+          arrivalTime:
+            type : string
+            example: 2020-12-14T10:51:00.000+00:00
+
+      UserSelf:
+        type: object
+        allOf:
+          - $ref: '#/components/schemas/SelfObj'
+          - $ref: '#/components/schemas/User'
+            
+      Line:
+        type: object
+        required:
+          - id
+          - name
+          - capacity
+          - path
+        properties:
+          id:
+            type: string
+            format: uuid
+          name:
+            type: string
+          capacity: 
+            type: integer
+          path:
+            type: array
+            items:
+              $ref: '#/components/schemas/BusStopAdd'
+          
+      LineSelf:
+        type: object
+        allOf:
+          - $ref: '#/components/schemas/SelfObj'
+          - $ref: '#/components/schemas/Line'
+      
+      BusStop:
+        type: object
+        properties:
+          id:
+            type: string
+            description: ID della fermata
+          name:
+            type: string
+            description: Nome della fermata
+
+      BusStopAdd:
+        type: object
+        properties:
+          busStopId:
+            type: string
+          number:
+            type: integer
+          times:
+            type: array
+            items:
+              $ref: '#/components/schemas/BusStopTimeOptions'
+
+      BusStopTimeOptions:
+        type: object
+        properties:
+          time:
+            type: string
+          accessibility:
+            type: boolean
+
+      LineError:
+        type: object
+        properties:
+          fieldName:
+            type: string
+            description: "Nome del campo che ha generato l'errore"
+          fieldErrorMessage:
+            type: string
+            description: "Errore specifico del campo"        
+        required:
+          - fieldName
+          - fieldErrorMessage
+        
+      # An error message relative to a field
+      FieldError:
+        type: object
+        properties:
+          fieldName:
+            type: string
+            description: "Nome del campo che ha generato l'errore"
+          fieldMessage:
+            type: string
+            description: "Errore specifico del campo"
+        required:
+          - fieldName
+          - fieldMessage
+          
+    # Responses such as 400 Bad Request
+    responses:
+      400BadRequest:
+        description: Richiesta invalida. Parametri non validi e/o parametri obbligatori mancanti
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: "Messaggio dell'errore"
+                  example: Il campo "email" è obbligatorio 
+                fieldsErrors:
+                  type: array
+                  description: "I campi che hanno generato l'errore con il relativo messaggio"
+                  items:
+                    $ref: '#/components/schemas/FieldError'
+                  example:
+                    - fieldName: email
+                      fieldMessage: Il campo "email" è obbligatorio
+              required:
+                - message
+
+      # Unauthorized response
+      401Unauthorized:
+        description: L'utente non è autenticato.
+        content:
+          text/plain:
+            schema:
+              type: string
+              example: Utente non autenticato.
+
+      # Forbidden response
+      403Forbidden:
+        description: L'utente è autenticato ma l'accesso alla risorsa non è autorizzato.
+        content:
+          text/plain:
+            schema:
+              type: string
+              example: Accesso non autorizzato.
